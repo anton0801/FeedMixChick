@@ -393,7 +393,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Feed Mix Chick";
+				INFOPLIST_KEY_CFBundleDisplayName = "Feed Mix Bird";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "We need permision to use function voice to text";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -433,7 +433,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Feed Mix Chick";
+				INFOPLIST_KEY_CFBundleDisplayName = "Feed Mix Bird";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "We need permision to use function voice to text";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;

@@ -4,13 +4,13 @@ workflows:
     max_build_duration: 120
     instance_type: mac_mini_m2
     integrations:
-      app_store_connect: feedmixchick_app
+      app_store_connect: feedmixchick_user
     environment:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.healtinhappchick.FeedMixChick
       vars:
-        APP_STORE_CONNECT_KEY: feedmixchick_app
+        APP_STORE_CONNECT_KEY: feedmixchick_user
         APP_STORE_APPLE_ID: 6753989838
         BUNDLE_ID: "com.healtinhappchick.FeedMixChick"
         XCODE_PROJECT: "FeedMixChick.xcodeproj"
