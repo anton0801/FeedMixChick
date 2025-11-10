@@ -6,7 +6,22 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		8F2BCB682EC0BAB500D4C444 /* AppsFlyerLib in Frameworks */ = {isa = PBXBuildFile; productRef = 8F2BCB672EC0BAB500D4C444 /* AppsFlyerLib */; };
+		8F2BCB6B2EC0BB2D00D4C444 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 8F2BCB6A2EC0BB2D00D4C444 /* FirebaseAnalytics */; };
+		8F2BCB6D2EC0BB2D00D4C444 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 8F2BCB6C2EC0BB2D00D4C444 /* FirebaseMessaging */; };
+		8F2BCB7B2EC0BBA800D4C444 /* NotificationServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8F2BCB742EC0BBA800D4C444 /* NotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		8F2BCB832EC0BBC200D4C444 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 8F2BCB822EC0BBC200D4C444 /* FirebaseMessaging */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
+		8F2BCB792EC0BBA800D4C444 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8F77CAD42EA812E900D4FB4F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8F2BCB732EC0BBA800D4C444;
+			remoteInfo = NotificationServiceExtension;
+		};
 		8F77CAEB2EA812EC00D4FB4F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8F77CAD42EA812E900D4FB4F /* Project object */;
@@ -23,15 +38,58 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		8F2BCB802EC0BBA800D4C444 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				8F2BCB7B2EC0BBA800D4C444 /* NotificationServiceExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		8F2BCB742EC0BBA800D4C444 /* NotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F77CADC2EA812E900D4FB4F /* FeedMixChick.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FeedMixChick.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F77CAEA2EA812EC00D4FB4F /* FeedMixChickTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FeedMixChickTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F77CAF42EA812EC00D4FB4F /* FeedMixChickUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FeedMixChickUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		8F2BCB6F2EC0BB4800D4C444 /* Exceptions for "FeedMixChick" folder in "FeedMixChick" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 8F77CADB2EA812E900D4FB4F /* FeedMixChick */;
+		};
+		8F2BCB7F2EC0BBA800D4C444 /* Exceptions for "NotificationServiceExtension" folder in "NotificationServiceExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 8F2BCB732EC0BBA800D4C444 /* NotificationServiceExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		8F2BCB752EC0BBA800D4C444 /* NotificationServiceExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				8F2BCB7F2EC0BBA800D4C444 /* Exceptions for "NotificationServiceExtension" folder in "NotificationServiceExtension" target */,
+			);
+			path = NotificationServiceExtension;
+			sourceTree = "<group>";
+		};
 		8F77CADE2EA812E900D4FB4F /* FeedMixChick */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				8F2BCB6F2EC0BB4800D4C444 /* Exceptions for "FeedMixChick" folder in "FeedMixChick" target */,
+			);
 			path = FeedMixChick;
 			sourceTree = "<group>";
 		};
@@ -48,10 +106,21 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		8F2BCB712EC0BBA800D4C444 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8F2BCB832EC0BBC200D4C444 /* FirebaseMessaging in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8F77CAD92EA812E900D4FB4F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8F2BCB6D2EC0BB2D00D4C444 /* FirebaseMessaging in Frameworks */,
+				8F2BCB6B2EC0BB2D00D4C444 /* FirebaseAnalytics in Frameworks */,
+				8F2BCB682EC0BAB500D4C444 /* AppsFlyerLib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,12 +141,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8F2BCB812EC0BBC200D4C444 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		8F77CAD32EA812E900D4FB4F = {
 			isa = PBXGroup;
 			children = (
 				8F77CADE2EA812E900D4FB4F /* FeedMixChick */,
 				8F77CAED2EA812EC00D4FB4F /* FeedMixChickTests */,
 				8F77CAF72EA812EC00D4FB4F /* FeedMixChickUITests */,
+				8F2BCB752EC0BBA800D4C444 /* NotificationServiceExtension */,
+				8F2BCB812EC0BBC200D4C444 /* Frameworks */,
 				8F77CADD2EA812E900D4FB4F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -88,6 +166,7 @@
 				8F77CADC2EA812E900D4FB4F /* FeedMixChick.app */,
 				8F77CAEA2EA812EC00D4FB4F /* FeedMixChickTests.xctest */,
 				8F77CAF42EA812EC00D4FB4F /* FeedMixChickUITests.xctest */,
+				8F2BCB742EC0BBA800D4C444 /* NotificationServiceExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,6 +174,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		8F2BCB732EC0BBA800D4C444 /* NotificationServiceExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8F2BCB7C2EC0BBA800D4C444 /* Build configuration list for PBXNativeTarget "NotificationServiceExtension" */;
+			buildPhases = (
+				8F2BCB702EC0BBA800D4C444 /* Sources */,
+				8F2BCB712EC0BBA800D4C444 /* Frameworks */,
+				8F2BCB722EC0BBA800D4C444 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				8F2BCB752EC0BBA800D4C444 /* NotificationServiceExtension */,
+			);
+			name = NotificationServiceExtension;
+			packageProductDependencies = (
+				8F2BCB822EC0BBC200D4C444 /* FirebaseMessaging */,
+			);
+			productName = NotificationServiceExtension;
+			productReference = 8F2BCB742EC0BBA800D4C444 /* NotificationServiceExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		8F77CADB2EA812E900D4FB4F /* FeedMixChick */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8F77CAFE2EA812EC00D4FB4F /* Build configuration list for PBXNativeTarget "FeedMixChick" */;
@@ -102,16 +204,21 @@
 				8F77CAD82EA812E900D4FB4F /* Sources */,
 				8F77CAD92EA812E900D4FB4F /* Frameworks */,
 				8F77CADA2EA812E900D4FB4F /* Resources */,
+				8F2BCB802EC0BBA800D4C444 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				8F2BCB7A2EC0BBA800D4C444 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				8F77CADE2EA812E900D4FB4F /* FeedMixChick */,
 			);
 			name = FeedMixChick;
 			packageProductDependencies = (
+				8F2BCB672EC0BAB500D4C444 /* AppsFlyerLib */,
+				8F2BCB6A2EC0BB2D00D4C444 /* FirebaseAnalytics */,
+				8F2BCB6C2EC0BB2D00D4C444 /* FirebaseMessaging */,
 			);
 			productName = FeedMixChick;
 			productReference = 8F77CADC2EA812E900D4FB4F /* FeedMixChick.app */;
@@ -173,6 +280,9 @@
 				LastSwiftUpdateCheck = 1640;
 				LastUpgradeCheck = 1640;
 				TargetAttributes = {
+					8F2BCB732EC0BBA800D4C444 = {
+						CreatedOnToolsVersion = 16.4;
+					};
 					8F77CADB2EA812E900D4FB4F = {
 						CreatedOnToolsVersion = 16.4;
 					};
@@ -195,6 +305,10 @@
 			);
 			mainGroup = 8F77CAD32EA812E900D4FB4F;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				8F2BCB662EC0BAB500D4C444 /* XCRemoteSwiftPackageReference "AppsFlyerFramework" */,
+				8F2BCB692EC0BB2D00D4C444 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8F77CADD2EA812E900D4FB4F /* Products */;
 			projectDirPath = "";
@@ -203,11 +317,19 @@
 				8F77CADB2EA812E900D4FB4F /* FeedMixChick */,
 				8F77CAE92EA812EC00D4FB4F /* FeedMixChickTests */,
 				8F77CAF32EA812EC00D4FB4F /* FeedMixChickUITests */,
+				8F2BCB732EC0BBA800D4C444 /* NotificationServiceExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		8F2BCB722EC0BBA800D4C444 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8F77CADA2EA812E900D4FB4F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -232,6 +354,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		8F2BCB702EC0BBA800D4C444 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8F77CAD82EA812E900D4FB4F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -256,6 +385,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		8F2BCB7A2EC0BBA800D4C444 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8F2BCB732EC0BBA800D4C444 /* NotificationServiceExtension */;
+			targetProxy = 8F2BCB792EC0BBA800D4C444 /* PBXContainerItemProxy */;
+		};
 		8F77CAEC2EA812EC00D4FB4F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8F77CADB2EA812E900D4FB4F /* FeedMixChick */;
@@ -269,6 +403,69 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		8F2BCB7D2EC0BBA800D4C444 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = K4CV2BU7AC;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NotificationServiceExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.healtinhappchick.FeedMixChic27k.NotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		8F2BCB7E2EC0BBA800D4C444 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = K4CV2BU7AC;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NotificationServiceExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.healtinhappchick.FeedMixChic27k.NotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		8F77CAFC2EA812EC00D4FB4F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -390,11 +587,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = FeedMixChick/FeedMixChick.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = K4CV2BU7AC;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FeedMixChick/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Feed Mix Bird";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Allow to use your camera.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "We need permision to use function voice to text";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use interaction data with ads to deliver more relevant offers and enhance your app experience. Your privacy matters—we respect your choice to opt out anytime in settings.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -409,8 +610,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.3;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.healtinhappchick.FeedMixChick;
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.healtinhappchick.FeedMixChic27k;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
@@ -430,11 +631,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = FeedMixChick/FeedMixChick.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = K4CV2BU7AC;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FeedMixChick/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Feed Mix Bird";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Allow to use your camera.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "We need permision to use function voice to text";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use interaction data with ads to deliver more relevant offers and enhance your app experience. Your privacy matters—we respect your choice to opt out anytime in settings.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -449,8 +654,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.3;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.healtinhappchick.FeedMixChick;
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.healtinhappchick.FeedMixChic27k;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
@@ -552,6 +757,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		8F2BCB7C2EC0BBA800D4C444 /* Build configuration list for PBXNativeTarget "NotificationServiceExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8F2BCB7D2EC0BBA800D4C444 /* Debug */,
+				8F2BCB7E2EC0BBA800D4C444 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		8F77CAD72EA812E900D4FB4F /* Build configuration list for PBXProject "FeedMixChick" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -589,6 +803,48 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8F2BCB662EC0BAB500D4C444 /* XCRemoteSwiftPackageReference "AppsFlyerFramework" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AppsFlyerSDK/AppsFlyerFramework";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.17.7;
+			};
+		};
+		8F2BCB692EC0BB2D00D4C444 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8F2BCB672EC0BAB500D4C444 /* AppsFlyerLib */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F2BCB662EC0BAB500D4C444 /* XCRemoteSwiftPackageReference "AppsFlyerFramework" */;
+			productName = AppsFlyerLib;
+		};
+		8F2BCB6A2EC0BB2D00D4C444 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F2BCB692EC0BB2D00D4C444 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		8F2BCB6C2EC0BB2D00D4C444 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F2BCB692EC0BB2D00D4C444 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
+		8F2BCB822EC0BBC200D4C444 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F2BCB692EC0BB2D00D4C444 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8F77CAD42EA812E900D4FB4F /* Project object */;
 }
