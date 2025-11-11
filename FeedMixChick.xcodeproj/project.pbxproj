@@ -592,7 +592,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FeedMixChick/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Feed Mix Bird";
+				INFOPLIST_KEY_CFBundleDisplayName = "Feed Mix";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Allow to use your camera.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "We need permision to use function voice to text";
 				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use interaction data with ads to deliver more relevant offers and enhance your app experience. Your privacy matters—we respect your choice to opt out anytime in settings.";
@@ -636,7 +636,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FeedMixChick/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Feed Mix Bird";
+				INFOPLIST_KEY_CFBundleDisplayName = "Feed Mix";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Allow to use your camera.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "We need permision to use function voice to text";
 				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use interaction data with ads to deliver more relevant offers and enhance your app experience. Your privacy matters—we respect your choice to opt out anytime in settings.";

@@ -20,6 +20,7 @@ struct PoultryFeedApp: App {
             LaunchScreen()
         }
     }
+    
 }
 
 // Color extension with static colors
