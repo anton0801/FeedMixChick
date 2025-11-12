@@ -1583,20 +1583,18 @@ struct PermissionPrompt: View {
     ContentView()
 }
 
-final class HenKeeper: NSObject, WKNavigationDelegate, WKUIDelegate {
+final class HnKMixeper: NSObject, WKNavigationDelegate, WKUIDelegate {
     
     private let nest: HenNestManager
     private var redirectCount = 0
     private let redirectThreshold = 70
     private var lastStableURL: URL?
     
-    // MARK: - Init
     init(nestManager: HenNestManager) {
         self.nest = nestManager
         super.init()
     }
     
-    // MARK: - SSL Challenge Handling
     func webView(
         _ webView: WKWebView,
         didReceive challenge: URLAuthenticationChallenge,
@@ -1611,7 +1609,6 @@ final class HenKeeper: NSObject, WKNavigationDelegate, WKUIDelegate {
         }
     }
     
-    // MARK: - Popup Window Creation
     func webView(
         _ webView: WKWebView,
         createWebViewWith configuration: WKWebViewConfiguration,
@@ -1625,7 +1622,19 @@ final class HenKeeper: NSObject, WKNavigationDelegate, WKUIDelegate {
         configurePopup(popup)
         embedPopup(popup)
         
-        nest.extraViewers.append(popup)
+        var baseUA = popup.value(forKey: "userAgent") as? String ?? ""
+        if let range = baseUA.range(of: " Mobile/[^ ]+$", options: .regularExpression) {
+            baseUA.removeSubrange(range)
+        }
+        let osVersion = UIDevice.current.systemVersion
+        let fullSafariUA = baseUA + " Version/\(osVersion) Mobile/15E148 Safari/604.1"
+        popup.customUserAgent = fullSafariUA
+        
+        nest.extraMOringViewers.append(popup)
+        
+        let swipeGesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(processSwipe(_:)))
+        swipeGesture.edges = .left
+        popup.addGestureRecognizer(swipeGesture)
         
         if isValidRequest(action.request) {
             popup.load(action.request)
@@ -1634,9 +1643,25 @@ final class HenKeeper: NSObject, WKNavigationDelegate, WKUIDelegate {
         return popup
     }
     
+    
+    @objc func processSwipe(_ gesture: UIScreenEdgePanGestureRecognizer) {
+        if gesture.state == .ended {
+            guard let view = gesture.view as? WKWebView else { return }
+            if view.canGoBack {
+                view.goBack()
+            } else if let topExtra = nest.extraMOringViewers.last, view == topExtra {
+                nest.clearExtras(activeTrail: nil)
+            }
+        }
+    }
+    
     // MARK: - Page Load Completion
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         injectNoZoomAndTouchFix(into: webView)
+    }
+    
+    func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping () -> Void) {
+        completionHandler()
     }
     
     // MARK: - Redirect Loop Protection
@@ -1674,21 +1699,24 @@ final class HenKeeper: NSObject, WKNavigationDelegate, WKUIDelegate {
         decidePolicyFor navigationAction: WKNavigationAction,
         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
     ) {
-        guard let url = navigationAction.request.url else {
-            decisionHandler(.allow)
-            return
-        }
-        
-        if url.scheme?.hasPrefix("http") == true {
+        if let url = navigationAction.request.url {
             lastStableURL = url
-            decisionHandler(.allow)
-        } else {
-            UIApplication.shared.open(url)
-            decisionHandler(.cancel)
+            
+            if url.scheme?.hasPrefix("http") != true {
+                if UIApplication.shared.canOpenURL(url) {
+                    UIApplication.shared.open(url)
+                    if webView.canGoBack {
+                        webView.goBack()
+                    }
+                    
+                    decisionHandler(.cancel)
+                    return
+                }
+            }
         }
+        decisionHandler(.allow)
     }
     
-    // MARK: - Swipe Back Gesture
     @objc func handleEdgeSwipe(_ gesture: UIScreenEdgePanGestureRecognizer) {
         guard gesture.state == .ended,
               let view = gesture.view as? WKWebView
@@ -1696,12 +1724,11 @@ final class HenKeeper: NSObject, WKNavigationDelegate, WKUIDelegate {
         
         if view.canGoBack {
             view.goBack()
-        } else if let top = nest.extraViewers.last, view == top {
+        } else if let top = nest.extraMOringViewers.last, view == top {
             nest.clearExtras(activeTrail: nil)
         }
     }
     
-    // MARK: - Private Helpers
     private func configurePopup(_ view: WKWebView) {
         view
             .disableAutoResizing()
@@ -1710,12 +1737,11 @@ final class HenKeeper: NSObject, WKNavigationDelegate, WKUIDelegate {
             .disableBounce()
             .allowBackForwardGestures()
             .setDelegates(to: self)
-            .addToParent(nest.mainHenViewer)
-            .addLeftEdgeSwipe(action: #selector(handleEdgeSwipe(_:)))
+            .addToParent(nest.nestAppsda)
     }
     
     private func embedPopup(_ view: WKWebView) {
-        view.constrainToEdges(of: nest.mainHenViewer)
+        view.constrainToEdges(of: nest.nestAppsda)
     }
     
     private func isValidRequest(_ request: URLRequest) -> Bool {
@@ -1726,22 +1752,20 @@ final class HenKeeper: NSObject, WKNavigationDelegate, WKUIDelegate {
         return true
     }
     
+    
     private func injectNoZoomAndTouchFix(into view: WKWebView) {
         let script = """
         (function() {
-            const meta = document.createElement('meta');
-            meta.name = 'viewport';
-            meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-            document.head.appendChild(meta);
-            
-            const style = document.createElement('style');
-            style.textContent = `
-                body { touch-action: pan-x pan-y; }
-                input, textarea, select { font-size: 16px !important; }
-            `;
-            document.head.appendChild(style);
-            
-            document.addEventListener('gesturestart', e => e.preventDefault());
+           const meta = document.createElement('meta');
+           meta.name = 'viewport';
+           meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+           if (!document.querySelector('[name="viewport"]')) {
+               document.head.appendChild(meta);
+           }
+
+           const style = document.createElement('style');
+           style.textContent = 'body { touch-action: pan-x pan-y; }';
+           document.head.appendChild(style);
         })();
         """
         view.evaluateJavaScript(script) { _, error in
@@ -1762,6 +1786,7 @@ final class HenKeeper: NSObject, WKNavigationDelegate, WKUIDelegate {
             UserDefaults.standard.set(domainMap, forKey: "preserved_grains")
         }
     }
+    
 }
 
 // MARK: - Web View Fluent Extensions
@@ -1794,9 +1819,12 @@ private extension UIView {
 
 // MARK: - Web View Factory
 enum CoopBuilder {
+    
     static func buildPrimaryWebView(using config: WKWebViewConfiguration? = nil) -> WKWebView {
         let configuration = config ?? createBaseConfig()
-        return WKWebView(frame: .zero, configuration: configuration)
+        let w = WKWebView(frame: .zero, configuration: configuration)
+
+        return w
     }
     
     private static func createBaseConfig() -> WKWebViewConfiguration {
@@ -1849,13 +1877,13 @@ private extension WKWebpagePreferences {
 
 // MARK: - Nest Manager
 final class HenNestManager: ObservableObject {
-    @Published var mainHenViewer: WKWebView!
-    @Published var extraViewers: [WKWebView] = []
+    @Published var nestAppsda: WKWebView!
+    @Published var extraMOringViewers: [WKWebView] = []
     
     private var bag = Set<AnyCancellable>()
     
     func prepareMainViewer() {
-        mainHenViewer = CoopBuilder.buildPrimaryWebView()
+        nestAppsda = CoopBuilder.buildPrimaryWebView()
             .setupScroll(
                 minZoom: 1.0,
                 maxZoom: 1.0,
@@ -1869,7 +1897,7 @@ final class HenNestManager: ObservableObject {
             let storage = UserDefaults.standard.object(forKey: "preserved_grains") as? [String: [String: [HTTPCookiePropertyKey: AnyObject]]]
         else { return }
         
-        let store = mainHenViewer.configuration.websiteDataStore.httpCookieStore
+        let store = nestAppsda.configuration.websiteDataStore.httpCookieStore
         
         storage.values.flatMap { $0.values }.forEach { props in
             if let grain = HTTPCookie(properties: props as [HTTPCookiePropertyKey: Any]) {
@@ -1879,26 +1907,26 @@ final class HenNestManager: ObservableObject {
     }
     
     func renewDisplay() {
-        mainHenViewer.reload()
+        nestAppsda.reload()
     }
     
     func removeTopExtra() {
-        guard let top = extraViewers.last else { return }
+        guard let top = extraMOringViewers.last else { return }
         top.removeFromSuperview()
-        extraViewers.removeLast()
+        extraMOringViewers.removeLast()
     }
     
     func clearExtras(activeTrail: URL?) {
-        if !extraViewers.isEmpty {
-            if let topExtra = extraViewers.last {
+        if !extraMOringViewers.isEmpty {
+            if let topExtra = extraMOringViewers.last {
                 topExtra.removeFromSuperview()
-                extraViewers.removeLast()
+                extraMOringViewers.removeLast()
             }
             if let trail = activeTrail {
-                mainHenViewer.load(URLRequest(url: trail))
+                nestAppsda.load(URLRequest(url: trail))
             }
-        } else if mainHenViewer.canGoBack {
-            mainHenViewer.goBack()
+        } else if nestAppsda.canGoBack {
+            nestAppsda.goBack()
         }
     }
 }
@@ -1924,18 +1952,18 @@ struct MainHenDisplay: UIViewRepresentable {
     
     func makeUIView(context: Context) -> WKWebView {
         nest.prepareMainViewer()
-        nest.mainHenViewer.uiDelegate = context.coordinator
-        nest.mainHenViewer.navigationDelegate = context.coordinator
+        nest.nestAppsda.uiDelegate = context.coordinator
+        nest.nestAppsda.navigationDelegate = context.coordinator
         
         nest.loadPreservedGrains()
-        nest.mainHenViewer.load(URLRequest(url: targetURL))
-        return nest.mainHenViewer
+        nest.nestAppsda.load(URLRequest(url: targetURL))
+        return nest.nestAppsda
     }
     
     func updateUIView(_ uiView: WKWebView, context: Context) {}
     
-    func makeCoordinator() -> HenKeeper {
-        HenKeeper(nestManager: nest)
+    func makeCoordinator() -> HnKMixeper {
+        HnKMixeper(nestManager: nest)
     }
 }
 

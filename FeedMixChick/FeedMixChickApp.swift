@@ -98,12 +98,9 @@ final class ApplicationDelegate: UIResponder, UIApplicationDelegate, AppsFlyerLi
     
     func onConversionDataSuccess(_ data: [AnyHashable: Any]) {
         attributionData = data
-        // Запускаем таймер на 5 секунд
         scheduleMergeTimer()
         
-        // Пробуем отправить сразу (если deep link уже есть)
         trySendMergedData()
-        // broadcastAttributionUpdate(data: data)
     }
     
     func didResolveDeepLink(_ result: DeepLinkResult) {
@@ -195,12 +192,6 @@ final class ApplicationDelegate: UIResponder, UIApplicationDelegate, AppsFlyerLi
     
     // MARK: - Объединение и отправка
     private func trySendMergedData() {
-        // Если уже отправляли — выходим
-        guard !UserDefaults.standard.bool(forKey: hasSentAttributionKey) else { return }
-        
-        // Ждём хотя бы attribution
-        guard !attributionData.isEmpty else { return }
-        
         var merged = attributionData
         
         // Добавляем deep link только если он есть и ключей нет
