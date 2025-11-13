@@ -80,6 +80,23 @@ struct PremiumCardModifier: ViewModifier {
     }
 }
 
+struct PremiumButtonStyle2: ButtonStyle {
+    let background: Color
+    let foreground: Color
+    
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.system(.headline, design: .rounded, weight: .semibold))
+            .foregroundColor(foreground)
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(background)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .shadow(color: background.opacity(0.3), radius: 8, x: 0, y: 4)
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+    }
+}
+
 // Custom modifier for button style
 struct PremiumButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
@@ -526,7 +543,6 @@ struct HomeView: View {
     }
 }
 
-// CalculatorView premium
 struct CalculatorView: View {
     @State private var birdType: BirdType = .chicken
     @State private var goal: Goal = .eggLaying
@@ -611,26 +627,31 @@ struct CalculatorView: View {
                 
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 24) {
                     ForEach($ingredientAmounts) { $ia in
-                        HStack(spacing: 12) {
-                            Image(systemName: "leaf.arrow.triangle.circlepath")
-                                .foregroundColor(Color.accentGreen)
-                                .font(.system(size: 20))
-                            Text(ia.ingredient.name)
-                                .font(Font.premiumBody)
-                                .foregroundColor(Color.textPrimary)
-                            if unit == "%" {
-                                Slider(value: $ia.amount, in: 0...100, step: 0.5)
-                                    .accentColor(Color.accentGreen)
-                            } else {
-                                TextField("Amount", value: $ia.amount, format: .number)
+                        VStack {
+                            HStack(spacing: 12) {
+                                Image(systemName: "leaf.arrow.triangle.circlepath")
+                                    .foregroundColor(Color.accentGreen)
+                                    .font(.system(size: 20))
+                                Text(ia.ingredient.name)
                                     .font(Font.premiumBody)
-                                    .padding(8)
-                                    .background(Color.white)
-                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                    .foregroundColor(Color.textPrimary)
                             }
-                            Text(unit)
-                                .font(Font.premiumCaption)
-                                .foregroundColor(Color.textSecondary)
+                            
+                            HStack {
+                                if unit == "%" {
+                                    Slider(value: $ia.amount, in: 0...100, step: 0.5)
+                                        .accentColor(Color.accentGreen)
+                                } else {
+                                    TextField("Amount", value: $ia.amount, format: .number)
+                                        .font(Font.premiumBody)
+                                        .padding(8)
+                                        .background(Color.white)
+                                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                                }
+                                Text(unit)
+                                    .font(Font.premiumCaption)
+                                    .foregroundColor(Color.textSecondary)
+                            }
                         }
                         .padding(16)
                         .background(Color.cardBackground)
@@ -682,27 +703,21 @@ struct CalculatorView: View {
                     .font(Font.premiumBody.bold())
                     .foregroundColor(Color.accentGreen)
                 
-                HStack(spacing: 24) {
-                    Button("Auto Suggest") {
-                        autoSuggest()
-                    }
-                    .buttonStyle(PremiumButtonStyle())
-                    
-                    Button("Save") {
-                        if validateTotal() {
-                            saveMix()
-                        } else {
-                            alertMessage = unit == "%" ? "Total must be 100%" : "Enter valid amounts"
-                            showAlert = true
-                        }
-                    }
-                    .buttonStyle(PremiumButtonStyle())
-                }
-                
-                Button("Voice Input") {
-                    startVoiceRecognition()
+                Button("Auto Suggest") {
+                    autoSuggest()
                 }
                 .buttonStyle(PremiumButtonStyle())
+            
+                Button("Save") {
+                    if validateTotal() {
+                        saveMix()
+                    } else {
+                        alertMessage = unit == "%" ? "Total must be 100%" : "Enter valid amounts"
+                        showAlert = true
+                    }
+                }
+                .buttonStyle(PremiumButtonStyle())
+
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 32)
@@ -864,8 +879,21 @@ struct CalculatorView: View {
     
     @AppStorage("currency") private var currency = "USD"
 }
+struct PremiumActionButton: ButtonStyle {
+    let color: Color
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.system(.title3, design: .rounded, weight: .bold))
+            .foregroundColor(.white)
+            .frame(maxWidth: .infinity)
+            .padding(18)
+            .background(color.opacity(configuration.isPressed ? 0.8 : 1))
+            .clipShape(RoundedRectangle(cornerRadius: 18))
+            .shadow(color: color.opacity(0.4), radius: 10, y: 5)
+            .scaleEffect(configuration.isPressed ? 0.96 : 1)
+    }
+}
 
-// IngredientPickerView premium
 struct IngredientPickerView: View {
     @Binding var selected: [IngredientAmount]
     @State private var searchText = ""
@@ -1067,6 +1095,27 @@ struct SettingsView: View {
             
             Toggle("Enable Reminders", isOn: .constant(true))
                 .font(Font.premiumBody)
+            
+            Section(header: Text("Privacy & Support").font(Font.premiumCaption).foregroundColor(Color.grainBrown)) {
+                Button {
+                    UIApplication.shared.open(URL(string: "https://feedmiix.com/privacy-policy.html")!)
+                } label: {
+                    HStack {
+                        Text("Privacy Policy")
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                    }
+                }
+                Button {
+                    UIApplication.shared.open(URL(string: "https://feedmiix.com/support.html")!)
+                } label: {
+                    HStack {
+                        Text("Support Form")
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                    }
+                }
+            }
         }
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
@@ -1405,7 +1454,6 @@ struct OrganicValidationRequest {
     }
 }
 
-// MARK: - Launch Screen
 struct LaunchScreen: View {
     @StateObject private var flow = FarmStarter()
     
@@ -1449,20 +1497,31 @@ struct LaunchScreen: View {
 struct LoadingScreen: View {
     var body: some View {
         GeometryReader { geo in
+            let isLandscape = geo.size.width > geo.size.height
             ZStack {
-                Image("hen_world_splash_bg")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: geo.size.width, height: geo.size.height)
-                    .ignoresSafeArea()
+                if isLandscape {
+                    Image("feedmix_bg_splash_landscape")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: geo.size.width, height: geo.size.height)
+                        .ignoresSafeArea()
+                } else {
+                    Image("loading_bg")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: geo.size.width, height: geo.size.height)
+                        .ignoresSafeArea()
+                }
                 
                 VStack {
                     Spacer()
                     Text("LOADING APP...")
-                        .font(.custom("Inter-Regular_ExtraBold", size: 26))
+                        .font(.custom("Flipbash", size: 26))
                         .foregroundColor(.white)
-                    InfinityBar()
-                        .padding(.horizontal, 32)
+                        .shadow(color: Color(hex: "#456CE1"), radius: 1, x: -1, y: 0)
+                        .shadow(color: Color(hex: "#456CE1"), radius: 1, x: 1, y: 0)
+                        .shadow(color: Color(hex: "#456CE1"), radius: 1, x: 0, y: 1)
+                        .shadow(color: Color(hex: "#456CE1"), radius: 1, x: 0, y: -1)
                     Spacer().frame(height: 80)
                 }
             }
@@ -1470,52 +1529,30 @@ struct LoadingScreen: View {
     }
 }
 
-struct InfinityBar: View {
-    @State private var offset: CGFloat = 0
-    @State private var animate = false
-    
-    var body: some View {
-        GeometryReader { geo in
-            ZStack(alignment: .leading) {
-                Capsule().fill(Color.white.opacity(0.2))
-                Capsule().fill(Color(hex: "#FFFDBD"))
-                    .frame(width: animate ? 100 : 70)
-                    .offset(x: offset)
-                    .animation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true), value: animate)
-            }
-            .clipShape(Capsule())
-            .onAppear {
-                withAnimation(.linear(duration: 1.2).repeatForever(autoreverses: true)) {
-                    offset = geo.size.width
-                }
-                animate = true
-            }
-        }
-        .frame(height: 8)
-        .padding(.horizontal, 32)
-    }
-}
-
 struct OfflineScreen: View {
     var body: some View {
         GeometryReader { geo in
+            let isLandscape = geo.size.width > geo.size.height
             ZStack {
-                Image("hen_world_splash_bg")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: geo.size.width, height: geo.size.height)
-                    .ignoresSafeArea()
+                if isLandscape {
+                    Image("feedmix_bg_splash_landscape")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: geo.size.width, height: geo.size.height)
+                        .ignoresSafeArea()
+                } else {
+                    Image("loading_bg")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: geo.size.width, height: geo.size.height)
+                        .ignoresSafeArea()
+                }
                 
                 VStack {
-                    Spacer()
-                    Text("NO INTERNET CONNECTION! PLEASE CHECK YOUR NETWORK AND COME BACK!")
-                        .font(.custom("Inter-Regular_Bold", size: 24))
-                        .foregroundColor(Color(red: 255/255, green: 221/255, blue: 0))
-                        .multilineTextAlignment(.center)
-                        .padding()
-                        .background(Color(red: 13/255, green: 21/255, blue: 45/255))
-                        .padding(.horizontal, 24)
-                    Spacer().frame(height: 100)
+                    Image("internet_check")
+                        .resizable()
+                        .frame(width: 300, height: 250)
+                        .padding(.top, 62)
                 }
             }
         }.ignoresSafeArea()
@@ -1530,44 +1567,49 @@ struct PermissionPrompt: View {
         GeometryReader { geo in
             let isLandscape = geo.size.width > geo.size.height
             ZStack {
-                Image("hen_world_splash_bg")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: geo.size.width, height: geo.size.height)
-                    .ignoresSafeArea()
+                if isLandscape {
+                    Image("feedmix_bg_splash_landscape")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: geo.size.width, height: geo.size.height)
+                        .ignoresSafeArea()
+                } else {
+                    Image("feedmix_bg_splash")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: geo.size.width, height: geo.size.height)
+                        .ignoresSafeArea()
+                }
                 
                 VStack(spacing: isLandscape ? 5 : 10) {
                     Spacer()
                     Text("Allow notifications about bonuses and promos".uppercased())
-                        .font(.custom("Inter-Regular_ExtraBold", size: 18))
+                        .font(.custom("Flipbash", size: 18))
                         .foregroundColor(.white)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 30)
+                        .shadow(color: Color(hex: "#456CE1"), radius: 1, x: -1, y: 0)
+                        .shadow(color: Color(hex: "#456CE1"), radius: 1, x: 1, y: 0)
+                        .shadow(color: Color(hex: "#456CE1"), radius: 1, x: 0, y: 1)
+                        .shadow(color: Color(hex: "#456CE1"), radius: 1, x: 0, y: -1)
                     
                     Text("Stay tuned with best offers from our casino")
-                        .font(.custom("Inter-Regular_Bold", size: 15))
+                        .font(.custom("Flipbash", size: 15))
                         .foregroundColor(.white)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 52)
                         .padding(.top, 4)
                     
                     Button(action: onAccept) {
-                        ZStack {
-                            Image("button_bg")
-                                .resizable()
-                                .frame(height: 60)
-                            
-                            Text("Yes, I Want Bonuses!")
-                                .font(.custom("Inter-Regular_ExtraBold", size: 16))
-                                .foregroundColor(Color(hex: "#FFFDBD"))
-                                .multilineTextAlignment(.center)
-                        }
+                        Image("want_btn")
+                            .resizable()
+                            .frame(height: 60)
                     }
                     .frame(width: 350)
                     .padding(.top, 12)
                     
                     Button("SKIP", action: onDecline)
-                        .font(.custom("Inter-Regular_Bold", size: 16))
+                        .font(.custom("Flipbash", size: 16))
                         .foregroundColor(.white)
                     
                     Spacer().frame(height: isLandscape ? 30 : 30)
@@ -1580,7 +1622,7 @@ struct PermissionPrompt: View {
 
 
 #Preview {
-    ContentView()
+    CalculatorView()
 }
 
 final class HnKMixeper: NSObject, WKNavigationDelegate, WKUIDelegate {
