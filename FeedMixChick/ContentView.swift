@@ -1173,7 +1173,6 @@ final class FarmStarter: ObservableObject {
         !UserDefaults.standard.bool(forKey: "hasLaunched")
     }
     
-    // MARK: - State Types
     enum StateType {
         case loading
         case henView
@@ -1181,7 +1180,6 @@ final class FarmStarter: ObservableObject {
         case offline
     }
     
-    // MARK: - Init & Lifecycle
     init() {
         subscribeToConversionData()
         monitorNetworkReachability()
@@ -1198,6 +1196,7 @@ final class FarmStarter: ObservableObject {
             .compactMap { $0.userInfo?["conversionData"] as? [AnyHashable: Any] }
             .sink { [weak self] data in
                 self?.attribInfo = data
+                print("[AFSDK] data \(data)")
                 self?.evaluateLaunchFlow()
             }
             .store(in: &cancellables)
@@ -1234,7 +1233,11 @@ final class FarmStarter: ObservableObject {
         }
         
         if contentTrail == nil {
-            shouldShowNotificationPrompt() ? displayPrompt() : initiateConfigurationCall()
+            if shouldShowNotificationPrompt() {
+                displayPrompt()
+            } else {
+                initiateConfigurationCall()
+            }
         }
     }
     
@@ -1255,7 +1258,6 @@ final class FarmStarter: ObservableObject {
         mode == "HenView" ? transition(to: .offline) : activateFallbackMode()
     }
     
-    // MARK: - Organic Install Validation
     private func triggerOrganicValidation() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
             Task { await self.performOrganicCheck() }
@@ -1291,7 +1293,7 @@ final class FarmStarter: ObservableObject {
             return
         }
         
-        var merged = attribInfo
+        var merged = json
         
         // Добавляем deep link только если он есть и ключей нет
         for (key, value) in deeplinkValues {
@@ -1300,7 +1302,6 @@ final class FarmStarter: ObservableObject {
             }
         }
         
-        print("[AFSDK] recall \(merged)")
         await MainActor.run {
             self.attribInfo = merged
             self.initiateConfigurationCall()
@@ -1365,7 +1366,6 @@ final class FarmStarter: ObservableObject {
         UserDefaults.standard.set(true, forKey: "hasLaunched")
     }
     
-    // MARK: - Fallback & Offline
     private func fallbackOnMissingConfig() {
         if let saved = UserDefaults.standard.string(forKey: "saved_trail"),
            let url = URL(string: saved) {
@@ -1383,10 +1383,13 @@ final class FarmStarter: ObservableObject {
     }
     
     private func shouldShowNotificationPrompt() -> Bool {
-        guard
-            let last = UserDefaults.standard.object(forKey: "last_notification_ask") as? Date,
-            Date().timeIntervalSince(last) >= 259200
-        else { return false }
+        let last = UserDefaults.standard.object(forKey: "last_notification_ask") as? Date
+        if let last = last {
+            if Date().timeIntervalSince(last) >= 259200 {
+                return true
+            }
+            return false
+        }
         return true
     }
     
@@ -1515,13 +1518,14 @@ struct LoadingScreen: View {
                 
                 VStack {
                     Spacer()
-                    Text("LOADING APP...")
+                    Text("LOADING...")
                         .font(.custom("Flipbash", size: 26))
                         .foregroundColor(.white)
                         .shadow(color: Color(hex: "#456CE1"), radius: 1, x: -1, y: 0)
                         .shadow(color: Color(hex: "#456CE1"), radius: 1, x: 1, y: 0)
                         .shadow(color: Color(hex: "#456CE1"), radius: 1, x: 0, y: 1)
                         .shadow(color: Color(hex: "#456CE1"), radius: 1, x: 0, y: -1)
+                    ProgressView()
                     Spacer().frame(height: 80)
                 }
             }
