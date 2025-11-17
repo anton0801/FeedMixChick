@@ -12,14 +12,11 @@ final class ApplicationDelegate: UIResponder, UIApplicationDelegate, AppsFlyerLi
     private let trackingActivationKey = UIApplication.didBecomeActiveNotification
     
     private var deepLinkClickEvent: [String: Any] = [:]
-    // Ключи для UserDefaults
     private let hasSentAttributionKey = "hasSentAttributionData"
     private let timerKey = "deepLinkMergeTimer"
     
-    // Таймер
     private var mergeTimer: Timer?
     
-    // MARK: - UIApplicationDelegate
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?

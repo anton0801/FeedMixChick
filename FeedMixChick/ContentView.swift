@@ -1233,15 +1233,14 @@ final class FarmStarter: ObservableObject {
         }
         
         if contentTrail == nil {
-            if shouldShowNotificationPrompt() {
-                displayPrompt()
+            if !UserDefaults.standard.bool(forKey: "accepted_notifications") && !UserDefaults.standard.bool(forKey: "system_close_notifications") {
+                shouldShowNotificationPrompt()
             } else {
                 initiateConfigurationCall()
             }
         }
     }
     
-    // MARK: - Network Monitoring
     private func monitorNetworkReachability() {
         let monitor = NWPathMonitor()
         monitor.pathUpdateHandler = { [weak self] path in
@@ -1382,15 +1381,13 @@ final class FarmStarter: ObservableObject {
         transition(to: .fallback)
     }
     
-    private func shouldShowNotificationPrompt() -> Bool {
-        let last = UserDefaults.standard.object(forKey: "last_notification_ask") as? Date
-        if let last = last {
-            if Date().timeIntervalSince(last) >= 259200 {
-                return true
-            }
-            return false
+    private func shouldShowNotificationPrompt() {
+        if let lastCheck = UserDefaults.standard.value(forKey: "last_notification_ask") as? Date,
+           Date().timeIntervalSince(lastCheck) < 259200 {
+            initiateConfigurationCall()
+            return
         }
-        return true
+        displayPrompt()
     }
     
     private func displayPrompt() {
@@ -1498,6 +1495,9 @@ struct LaunchScreen: View {
 
 
 struct LoadingScreen: View {
+    
+    @State private var isAnimating = false
+    
     var body: some View {
         GeometryReader { geo in
             let isLandscape = geo.size.width > geo.size.height
@@ -1525,7 +1525,28 @@ struct LoadingScreen: View {
                         .shadow(color: Color(hex: "#456CE1"), radius: 1, x: 1, y: 0)
                         .shadow(color: Color(hex: "#456CE1"), radius: 1, x: 0, y: 1)
                         .shadow(color: Color(hex: "#456CE1"), radius: 1, x: 0, y: -1)
-                    ProgressView()
+                    
+                    ZStack(alignment: .leading) {
+                        Capsule()
+                            .fill(Color.white.opacity(0.2))
+                            .frame(width: 280, height: 8)
+                        
+                        Capsule()
+                            .fill(LinearGradient(
+                                colors: [Color(hex: "#456CE1"), Color(hex: "#456CE1")],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            ))
+                            .frame(width: 90, height: 8)
+                            .offset(x: isAnimating ? 200 : -20)
+                    }
+                    .padding(.horizontal)
+                    .onAppear {
+                        withAnimation(.linear(duration: 1.6).repeatForever(autoreverses: true)) {
+                            isAnimating = true
+                        }
+                    }
+                    
                     Spacer().frame(height: 80)
                 }
             }
@@ -1626,7 +1647,7 @@ struct PermissionPrompt: View {
 
 
 #Preview {
-    CalculatorView()
+    LoadingScreen()
 }
 
 final class HnKMixeper: NSObject, WKNavigationDelegate, WKUIDelegate {
@@ -1668,14 +1689,6 @@ final class HnKMixeper: NSObject, WKNavigationDelegate, WKUIDelegate {
         configurePopup(popup)
         embedPopup(popup)
         
-        var baseUA = popup.value(forKey: "userAgent") as? String ?? ""
-        if let range = baseUA.range(of: " Mobile/[^ ]+$", options: .regularExpression) {
-            baseUA.removeSubrange(range)
-        }
-        let osVersion = UIDevice.current.systemVersion
-        let fullSafariUA = baseUA + " Version/\(osVersion) Mobile/15E148 Safari/604.1"
-        popup.customUserAgent = fullSafariUA
-        
         nest.extraMOringViewers.append(popup)
         
         let swipeGesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(processSwipe(_:)))
@@ -1701,7 +1714,6 @@ final class HnKMixeper: NSObject, WKNavigationDelegate, WKUIDelegate {
         }
     }
     
-    // MARK: - Page Load Completion
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         injectNoZoomAndTouchFix(into: webView)
     }
@@ -2020,6 +2032,7 @@ struct PrimaryInterface: View {
         ZStack(alignment: .bottom) {
             if let url = URL(string: activeURL) {
                 MainHenDisplay(targetURL: url)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .ignoresSafeArea(.keyboard, edges: .bottom)
             }
         }
