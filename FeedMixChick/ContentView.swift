@@ -98,22 +98,22 @@ struct PremiumButtonStyle2: ButtonStyle {
 }
 
 // Custom modifier for button style
-struct PremiumButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(Font.premiumHeadline)
-            .padding(.horizontal, 40)
-            .padding(.vertical, 16)
-            .background(
-                LinearGradient(colors: [Color.accentGreen, Color.accentGreen.opacity(0.85)], startPoint: .top, endPoint: .bottom)
-            )
-            .foregroundColor(.white)
-            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-            .shadow(color: Color.accentGreen.opacity(0.5), radius: 10, x: 0, y: 5)
-            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
-            .animation(.spring(response: 0.25, dampingFraction: 0.75), value: configuration.isPressed)
-    }
-}
+//struct PremiumButtonStyle: ButtonStyle {
+//    func makeBody(configuration: Configuration) -> some View {
+//        configuration.label
+//            .font(Font.premiumHeadline)
+//            .padding(.horizontal, 40)
+//            .padding(.vertical, 16)
+//            .background(
+//                LinearGradient(colors: [Color.accentGreen, Color.accentGreen.opacity(0.85)], startPoint: .top, endPoint: .bottom)
+//            )
+//            .foregroundColor(.white)
+//            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+//            .shadow(color: Color.accentGreen.opacity(0.5), radius: 10, x: 0, y: 5)
+//            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
+//            .animation(.spring(response: 0.25, dampingFraction: 0.75), value: configuration.isPressed)
+//    }
+//}
 
 // Data Models
 enum BirdType: String, CaseIterable, Codable, Identifiable {
@@ -535,7 +535,7 @@ struct HomeView: View {
                         Text("New Calculation")
                     }
                 }
-                .buttonStyle(PremiumButtonStyle())
+                .buttonStyle(PremiumButtonStyle(background: .green))
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 100) // For tab bar
@@ -543,342 +543,933 @@ struct HomeView: View {
     }
 }
 
+//struct CalculatorView: View {
+//    @State private var birdType: BirdType = .chicken
+//    @State private var goal: Goal = .eggLaying
+//    @State private var age: AgeGroup = .adult
+//    @State private var weight: String = ""
+//    @State private var ingredientAmounts: [IngredientAmount] = []
+//    @State private var updateTrigger = 0
+//    @State private var showIngredientPicker = false
+//    @State private var unit = "%"
+//    @AppStorage("unit") private var globalUnit = "%"
+//    
+//    @State private var calculatedNutrients: [String: Nutrient] = [:]
+//    @State private var recommendations: [String] = []
+//    @State private var totalPercentage: Double = 0
+//    @State private var showAlert = false
+//    @State private var alertMessage = ""
+//    @State private var costPerKg: Double = 0
+//    @State private var opacity: Double = 0
+//    
+//    var body: some View {
+//        ScrollView {
+//            VStack(spacing: 32) {
+//                VStack(spacing: 16) {
+//                    Text("Bird Type")
+//                        .font(Font.premiumCaption)
+//                        .foregroundColor(Color.textSecondary)
+//                    Picker("Bird Type", selection: $birdType) {
+//                        ForEach(BirdType.allCases) { type in
+//                            Text(type.rawValue).tag(type)
+//                        }
+//                    }
+//                    .pickerStyle(.menu)
+//                    .accentColor(Color.accentGreen)
+//                    .background(Color.cardBackground)
+//                    .clipShape(RoundedRectangle(cornerRadius: 15))
+//                    .shadow(color: Color.shadowColor, radius: 5)
+//                }
+//                
+//                VStack(spacing: 16) {
+//                    Text("Goal")
+//                        .font(Font.premiumCaption)
+//                        .foregroundColor(Color.textSecondary)
+//                    Picker("Goal", selection: $goal) {
+//                        ForEach(Goal.allCases) { goal in
+//                            Text(goal.rawValue).tag(goal)
+//                        }
+//                    }
+//                    .pickerStyle(.menu)
+//                    .accentColor(Color.accentGreen)
+//                    .background(Color.cardBackground)
+//                    .clipShape(RoundedRectangle(cornerRadius: 15))
+//                    .shadow(color: Color.shadowColor, radius: 5)
+//                }
+//                
+//                VStack(spacing: 16) {
+//                    Text("Age Group")
+//                        .font(Font.premiumCaption)
+//                        .foregroundColor(Color.textSecondary)
+//                    Picker("Age Group", selection: $age) {
+//                        ForEach(AgeGroup.allCases) { age in
+//                            Text(age.rawValue).tag(age)
+//                        }
+//                    }
+//                    .pickerStyle(.menu)
+//                    .accentColor(Color.accentGreen)
+//                    .background(Color.cardBackground)
+//                    .clipShape(RoundedRectangle(cornerRadius: 15))
+//                    .shadow(color: Color.shadowColor, radius: 5)
+//                }
+//                
+//                TextField("Average Bird Weight (kg, optional)", text: $weight)
+//                    .keyboardType(.decimalPad)
+//                    .font(Font.premiumBody)
+//                    .padding()
+//                    .background(Color.cardBackground)
+//                    .clipShape(RoundedRectangle(cornerRadius: 15))
+//                    .shadow(color: Color.shadowColor, radius: 5)
+//                
+//                Button("Add Ingredient") {
+//                    showIngredientPicker = true
+//                }
+//                .buttonStyle(PremiumButtonStyle())
+//                
+//                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 24) {
+//                    ForEach(ingredientAmounts.indices, id: \.self) { index in
+//                        let ia = ingredientAmounts[index]
+//                        
+//                        VStack {
+//                            HStack(spacing: 12) {
+//                                Image(systemName: "leaf.arrow.triangle.circlepath")
+//                                    .foregroundColor(Color.accentGreen)
+//                                    .font(.system(size: 20))
+//                                Text(ia.ingredient.name)
+//                                    .font(Font.premiumBody)
+//                                    .foregroundColor(Color.textPrimary)
+//                            }
+//                            
+//                            HStack {
+//                                if unit == "%" {
+//                                    Slider(value: Binding(
+//                                        get: { ingredientAmounts[index].amount },
+//                                        set: { newValue in
+//                                            ingredientAmounts[index].amount = newValue
+//                                            updateTrigger += 1          // ← триггер!
+//                                            calculateAll()              // ← сразу считаем
+//                                        }
+//                                    ), in: 0...100, step: 0.5)
+//                                    .accentColor(Color.accentGreen)
+//                                } else {
+//                                    TextField("Amount", value: Binding(
+//                                        get: { ingredientAmounts[index].amount },
+//                                        set: { newValue in
+//                                            ingredientAmounts[index].amount = newValue ?? 0
+//                                            updateTrigger += 1
+//                                            calculateAll()
+//                                        }
+//                                    ), format: .number)
+//                                    .keyboardType(.decimalPad)
+//                                    .font(Font.premiumBody)
+//                                    .padding(8)
+//                                    .background(Color.white)
+//                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+//                                }
+//                                
+//                                Text(unit)
+//                                    .font(Font.premiumCaption)
+//                                    .foregroundColor(Color.textSecondary)
+//                            }
+//                        }
+//                        .padding(16)
+//                        .background(Color.cardBackground)
+//                        .clipShape(RoundedRectangle(cornerRadius: 20))
+//                        .shadow(color: Color.shadowColor, radius: 10)
+//                    }
+//                    .onDelete { indexSet in
+//                        ingredientAmounts.remove(atOffsets: indexSet)
+//                        calculateAll()
+//                    }
+//                }
+//                .id(updateTrigger)
+//                
+//                if totalPercentage != 100 && unit == "%" {
+//                    Text("Total: \(totalPercentage, specifier: "%.1f")%")
+//                        .font(Font.premiumBody)
+//                        .foregroundColor(Color.errorRed)
+//                }
+//                
+//                VStack(spacing: 16) {
+//                    Text("Nutrients")
+//                        .font(Font.premiumHeadline)
+//                        .foregroundColor(Color.textPrimary)
+//                    ForEach(calculatedNutrients.keys.sorted(), id: \.self) { key in
+//                        let nutrient = calculatedNutrients[key]!
+//                        let color = getHighlightColor(for: nutrient, birdType: birdType, goal: goal, age: age)
+//                        HStack {
+//                            Text("\(key):")
+//                                .foregroundColor(Color.textSecondary)
+//                            Text("\(nutrient.value, specifier: "%.2f") \(nutrient.unit)")
+//                                .foregroundColor(color)
+//                                .font(Font.premiumBody.bold())
+//                        }
+//                        Divider().background(Color.divider)
+//                    }
+//                }
+//                .modifier(PremiumCardModifier())
+//                
+//                if !recommendations.isEmpty {
+//                    VStack(spacing: 16) {
+//                        Text("Recommendations")
+//                            .font(Font.premiumHeadline)
+//                            .foregroundColor(Color.textPrimary)
+//                        ForEach(recommendations, id: \.self) { rec in
+//                            Text(rec)
+//                                .font(Font.premiumBody)
+//                                .foregroundColor(Color.errorRed)
+//                        }
+//                    }
+//                    .modifier(PremiumCardModifier())
+//                }
+//                
+//                Text("Cost per kg: \(costPerKg, specifier: "%.2f") \(currency)")
+//                    .font(Font.premiumBody.bold())
+//                    .foregroundColor(Color.accentGreen)
+//                
+//                Button("Auto Suggest") {
+//                    autoSuggest()
+//                }
+//                .buttonStyle(PremiumButtonStyle())
+//            
+//                Button("Save") {
+//                    if validateTotal() {
+//                        saveMix()
+//                    } else {
+//                        alertMessage = unit == "%" ? "Total must be 100%" : "Enter valid amounts"
+//                        showAlert = true
+//                    }
+//                }
+//                .buttonStyle(PremiumButtonStyle())
+//
+//            }
+//            .padding(.horizontal, 20)
+//            .padding(.vertical, 32)
+//            .opacity(opacity)
+//            .onAppear {
+//                withAnimation(.easeOut(duration: 0.6)) {
+//                    opacity = 1
+//                }
+//            }
+//        }
+//        .sheet(isPresented: $showIngredientPicker) {
+//            IngredientPickerView(selected: $ingredientAmounts)
+//        }
+//        .alert(alertMessage, isPresented: $showAlert) {
+//            Button("OK") {}
+//        }
+//        .onAppear { unit = globalUnit }
+////        .onChange(of: ingredientAmounts) { _ in
+////            calculateAll()
+////        }
+////        .onChange(of: unit) { _ in calculateAll() }
+//    }
+//    
+//    private func calculateAll() {
+//        if unit == "%" {
+//            totalPercentage = ingredientAmounts.reduce(0) { $0 + $1.amount }
+//        } else {
+//            totalPercentage = 0 // или можно считать сумму в кг, если хочешь
+//        }
+//        
+//        calculateNutrients()
+//        calculateCost()
+//    }
+//    
+//    private func validateTotal() -> Bool {
+//        if unit == "%" {
+//            totalPercentage = ingredientAmounts.reduce(0) { $0 + $1.amount }
+//            return abs(totalPercentage - 100) < 0.1
+//        }
+//        return ingredientAmounts.allSatisfy { $0.amount > 0 }
+//    }
+//    
+//    private func calculateNutrients() {
+//        var totals: [String: Double] = [:]
+//        var totalAmount = 0.0
+//        for ia in ingredientAmounts {
+//            var amt = ia.amount
+//            if unit == "%" { amt /= 100 }
+//            totalAmount += amt
+//            for (key, nut) in ia.ingredient.nutrients {
+//                totals[key, default: 0] += nut.value * amt
+//            }
+//        }
+//        if totalAmount == 0 { return }
+//        
+//        for key in totals.keys {
+//            calculatedNutrients[key] = Nutrient(name: key, value: totals[key]! / totalAmount, unit: "%") // For % nutrients
+//        }
+//        
+//        // Energy is additive per kg
+//        if let energy = totals["Energy"] {
+//            calculatedNutrients["Energy"] = Nutrient(name: "Energy", value: energy, unit: "kcal/kg") // Already weighted
+//        }
+//        
+//        checkNormsAndRecommend()
+//    }
+//    
+//    private func checkNormsAndRecommend() {
+//        recommendations = []
+//        if let norms = nutrientNorms[birdType]?[goal]?[age] {
+//            for (key, (min, max)) in norms {
+//                if let val = calculatedNutrients[key]?.value {
+//                    if val < min { recommendations.append("Deficit in \(key): add sources.") ; scheduleNotification(title: "Nutrient Alert", body: "Deficit in \(key)") }
+//                    if val > max { recommendations.append("Excess in \(key): reduce.") ; scheduleNotification(title: "Nutrient Alert", body: "Excess in \(key)") }
+//                } else {
+//                    recommendations.append("\(key) not calculated.")
+//                }
+//            }
+//        }
+//    }
+//    
+//    private func calculateCost() {
+//        var totalCost = 0.0
+//        var totalAmount = 0.0
+//        for ia in ingredientAmounts {
+//            if let price = ia.ingredient.pricePerKg {
+//                var amt = ia.amount / (unit == "%" ? 100 : 1) // kg fraction
+//                totalCost += price * amt
+//                totalAmount += amt
+//            }
+//        }
+//        costPerKg = totalAmount > 0 ? totalCost / totalAmount : 0
+//    }
+//    
+//    private func getHighlightColor(for nutrient: Nutrient, birdType: BirdType, goal: Goal, age: AgeGroup) -> Color {
+//        if let norms = nutrientNorms[birdType]?[goal]?[age]?[nutrient.name] {
+//            let val = nutrient.value
+//            if val >= norms.min && val <= norms.max { return Color.accentGreen }
+//            if val < norms.min { return Color.deficitYellow }
+//            return Color.errorRed
+//        }
+//        return Color.textPrimary
+//    }
+//    
+//    @State var savedMixesData: Data!
+//    
+//    private func saveMix() {
+//        var mix = FeedMix(name: "Mix \(DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .short))", birdType: birdType, goal: goal, age: age, weight: Double(weight), ingredients: ingredientAmounts, calculatedNutrients: calculatedNutrients, date: Date())
+//        mix.costPerKg = costPerKg
+//        var mixes = (try? JSONDecoder().decode([FeedMix].self, from: savedMixesData)) ?? []
+//        mixes.append(mix)
+//        savedMixesData = (try? JSONEncoder().encode(mixes)) ?? Data()
+//    }
+//
+//    private func autoSuggest() {
+//        if let norms = nutrientNorms[birdType]?[goal]?[age] {
+//            // Simple suggestion: if protein low, add soybean
+//            if let protNorm = norms["Protein"]?.min, let currProt = calculatedNutrients["Protein"]?.value, currProt < protNorm {
+//                if let soy = defaultIngredients.first(where: { $0.name == "Soybean Meal" }) {
+//                    ingredientAmounts.append(IngredientAmount(ingredient: soy, amount: 10, unit: unit))
+//                }
+//            }
+//            // Add similar for other nutrients
+//            calculateAll()
+//        }
+//    }
+//    
+//    @AppStorage("currency") private var currency = "USD"
+//}
+
 struct CalculatorView: View {
+    @AppStorage("unit") private var globalUnit = "%"
+    @AppStorage("currency") private var currency = "USD"
+    @AppStorage("savedMixes") private var savedMixesData: Data = Data()
+    
     @State private var birdType: BirdType = .chicken
     @State private var goal: Goal = .eggLaying
     @State private var age: AgeGroup = .adult
     @State private var weight: String = ""
-    @State private var ingredientAmounts: [IngredientAmount] = []
-    @State private var showIngredientPicker = false
+    @State private var ingredients: [IngredientItem] = []
+    @State private var showPicker = false
     @State private var unit = "%"
-    @AppStorage("unit") private var globalUnit = "%"
     
+    @State private var totalPercentage: Double = 0
     @State private var calculatedNutrients: [String: Nutrient] = [:]
     @State private var recommendations: [String] = []
-    @State private var totalPercentage: Double = 0
-    @State private var showAlert = false
-    @State private var alertMessage = ""
     @State private var costPerKg: Double = 0
-    @State private var opacity: Double = 0
+    
+    private var isComplete: Bool {
+        unit == "%" ? abs(totalPercentage - 100) < 0.1 : !ingredients.isEmpty
+    }
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 32) {
-                VStack(spacing: 16) {
-                    Text("Bird Type")
-                        .font(Font.premiumCaption)
-                        .foregroundColor(Color.textSecondary)
-                    Picker("Bird Type", selection: $birdType) {
-                        ForEach(BirdType.allCases) { type in
-                            Text(type.rawValue).tag(type)
-                        }
-                    }
-                    .pickerStyle(.menu)
-                    .accentColor(Color.accentGreen)
-                    .background(Color.cardBackground)
-                    .clipShape(RoundedRectangle(cornerRadius: 15))
-                    .shadow(color: Color.shadowColor, radius: 5)
-                }
+        NavigationView {
+            ZStack {
+                LinearGradient(
+                    colors: [
+                        Color(hex: "1E293B"),
+                        Color(hex: "0F172A")
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .ignoresSafeArea()
                 
-                VStack(spacing: 16) {
-                    Text("Goal")
-                        .font(Font.premiumCaption)
-                        .foregroundColor(Color.textSecondary)
-                    Picker("Goal", selection: $goal) {
-                        ForEach(Goal.allCases) { goal in
-                            Text(goal.rawValue).tag(goal)
-                        }
-                    }
-                    .pickerStyle(.menu)
-                    .accentColor(Color.accentGreen)
-                    .background(Color.cardBackground)
-                    .clipShape(RoundedRectangle(cornerRadius: 15))
-                    .shadow(color: Color.shadowColor, radius: 5)
-                }
-                
-                VStack(spacing: 16) {
-                    Text("Age Group")
-                        .font(Font.premiumCaption)
-                        .foregroundColor(Color.textSecondary)
-                    Picker("Age Group", selection: $age) {
-                        ForEach(AgeGroup.allCases) { age in
-                            Text(age.rawValue).tag(age)
-                        }
-                    }
-                    .pickerStyle(.menu)
-                    .accentColor(Color.accentGreen)
-                    .background(Color.cardBackground)
-                    .clipShape(RoundedRectangle(cornerRadius: 15))
-                    .shadow(color: Color.shadowColor, radius: 5)
-                }
-                
-                TextField("Average Bird Weight (kg, optional)", text: $weight)
-                    .keyboardType(.decimalPad)
-                    .font(Font.premiumBody)
-                    .padding()
-                    .background(Color.cardBackground)
-                    .clipShape(RoundedRectangle(cornerRadius: 15))
-                    .shadow(color: Color.shadowColor, radius: 5)
-                
-                Button("Add Ingredient") {
-                    showIngredientPicker = true
-                }
-                .buttonStyle(PremiumButtonStyle())
-                
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 24) {
-                    ForEach($ingredientAmounts) { $ia in
-                        VStack {
-                            HStack(spacing: 12) {
-                                Image(systemName: "leaf.arrow.triangle.circlepath")
-                                    .foregroundColor(Color.accentGreen)
-                                    .font(.system(size: 20))
-                                Text(ia.ingredient.name)
-                                    .font(Font.premiumBody)
-                                    .foregroundColor(Color.textPrimary)
-                            }
+                ScrollView {
+                    VStack(spacing: 24) {
+                        
+                        // Прогресс-ринг
+                        VStack(spacing: 16) {
+                            Text("Feed Calculator")
+                                .font(.largeTitle.bold())
+                                .foregroundColor(.white)
                             
-                            HStack {
-                                if unit == "%" {
-                                    Slider(value: $ia.amount, in: 0...100, step: 0.5)
-                                        .accentColor(Color.accentGreen)
-                                } else {
-                                    TextField("Amount", value: $ia.amount, format: .number)
-                                        .font(Font.premiumBody)
-                                        .padding(8)
-                                        .background(Color.white)
-                                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                            ZStack {
+                                Circle()
+                                    .stroke(Color.white.opacity(0.2), lineWidth: 12)
+                                    .frame(width: 120, height: 120)
+                                
+                                Circle()
+                                    .trim(from: 0, to: min(totalPercentage / 100, 1.0))
+                                    .stroke(
+                                        AngularGradient(colors: [.green, .mint], center: .center),
+                                        style: StrokeStyle(lineWidth: 12, lineCap: .round)
+                                    )
+                                    .rotationEffect(.degrees(-90))
+                                    .frame(width: 120, height: 120)
+                                    .animation(.spring(response: 0.6), value: totalPercentage)
+                                
+                                VStack {
+                                    Text("\(Int(totalPercentage))%")
+                                        .font(.title.bold())
+                                        .foregroundColor(.white)
+                                    Text("Complete")
+                                        .font(.caption2)
+                                        .foregroundColor(.white.opacity(0.7))
                                 }
-                                Text(unit)
-                                    .font(Font.premiumCaption)
-                                    .foregroundColor(Color.textSecondary)
                             }
                         }
-                        .padding(16)
-                        .background(Color.cardBackground)
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                        .shadow(color: Color.shadowColor, radius: 10)
-                    }
-                }
-                
-                if totalPercentage != 100 && unit == "%" {
-                    Text("Total: \(totalPercentage, specifier: "%.1f")%")
-                        .font(Font.premiumBody)
-                        .foregroundColor(Color.errorRed)
-                }
-                
-                VStack(spacing: 16) {
-                    Text("Nutrients")
-                        .font(Font.premiumHeadline)
-                        .foregroundColor(Color.textPrimary)
-                    ForEach(calculatedNutrients.keys.sorted(), id: \.self) { key in
-                        let nutrient = calculatedNutrients[key]!
-                        let color = getHighlightColor(for: nutrient, birdType: birdType, goal: goal, age: age)
+                        .padding(.top)
+                        
+                        // Пикеры
                         HStack {
-                            Text("\(key):")
-                                .foregroundColor(Color.textSecondary)
-                            Text("\(nutrient.value, specifier: "%.2f") \(nutrient.unit)")
-                                .foregroundColor(color)
-                                .font(Font.premiumBody.bold())
+                            FancyPicker(title: "Bird", selection: $birdType, items: BirdType.allCases)
+                            FancyPicker(title: "Goal", selection: $goal, items: Goal.allCases)
                         }
-                        Divider().background(Color.divider)
-                    }
-                }
-                .modifier(PremiumCardModifier())
-                
-                if !recommendations.isEmpty {
-                    VStack(spacing: 16) {
-                        Text("Recommendations")
-                            .font(Font.premiumHeadline)
-                            .foregroundColor(Color.textPrimary)
-                        ForEach(recommendations, id: \.self) { rec in
-                            Text(rec)
-                                .font(Font.premiumBody)
-                                .foregroundColor(Color.errorRed)
+                        FancyPicker(title: "Age", selection: $age, items: AgeGroup.allCases)
+                        
+                        // Вес
+                        TextField("Bird weight (kg)", text: $weight)
+                            .keyboardType(.decimalPad)
+                            .padding(16)
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+                            .padding(.horizontal)
+                        
+                        // Режим
+                        HStack {
+                            Text("Unit").font(.headline).foregroundColor(.white)
+                            Spacer()
+                            Picker("", selection: $unit) {
+                                Text("Percent %").tag("%")
+                                Text("kg").tag("kg")
+                            }
+                            .pickerStyle(.segmented)
+                            .frame(width: 180)
                         }
+                        .padding(.horizontal)
+                        
+                        // Ингредиенты
+                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+                            ForEach(ingredients) { item in
+                                FancyIngredientCard(
+                                    item: item,
+                                    unit: unit,
+                                    onDelete: {
+                                        withAnimation {
+                                            ingredients.removeAll { $0.id == item.id }
+                                        }
+                                    },
+                                    onAmountChange: {
+                                        calculateAll()
+                                    }
+                                )
+                                .transition(.scale.combined(with: .opacity))
+                            }
+                        }
+                        .padding(.horizontal)
+                        .animation(.spring(), value: ingredients)
+                        
+                        // Рекомендации
+                        if !recommendations.isEmpty {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("Recommendations")
+                                    .font(.title2.bold())
+                                    .foregroundColor(.white)
+                                ForEach(recommendations, id: \.self) { rec in
+                                    Label(rec, systemImage: "exclamationmark.triangle.fill")
+                                        .foregroundColor(.orange)
+                                }
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
+                            .padding(.horizontal)
+                        }
+                        
+                        // Стоимость
+                        if costPerKg > 0 {
+                            VStack(spacing: 8) {
+                                Text("Cost per kg")
+                                    .font(.title3)
+                                    .foregroundColor(.white.opacity(0.8))
+                                Text("\(costPerKg, specifier: "%.2f") \(currency)")
+                                    .font(.system(size: 48, weight: .bold, design: .rounded))
+                                    .foregroundColor(.green)
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24))
+                            .padding(.horizontal)
+                        }
+                        
+                        // Кнопки
+                        HStack(spacing: 16) {
+                            Button("Auto Fill") {
+                                autoSuggest()
+                            }
+                            .buttonStyle(.bordered)
+                            .tint(.blue)
+                            
+                            Button("Save Mix") {
+                                saveMix()
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(isComplete ? .green : .gray)
+                            .disabled(!isComplete)
+                            .scaleEffect(isComplete ? 1.05 : 1.0)
+                            .animation(.spring(), value: isComplete)
+                        }
+                        .padding(.horizontal)
+                        .padding(.bottom, 100)
                     }
-                    .modifier(PremiumCardModifier())
                 }
                 
-                Text("Cost per kg: \(costPerKg, specifier: "%.2f") \(currency)")
-                    .font(Font.premiumBody.bold())
-                    .foregroundColor(Color.accentGreen)
-                
-                Button("Auto Suggest") {
-                    autoSuggest()
-                }
-                .buttonStyle(PremiumButtonStyle())
-            
-                Button("Save") {
-                    if validateTotal() {
-                        saveMix()
-                    } else {
-                        alertMessage = unit == "%" ? "Total must be 100%" : "Enter valid amounts"
-                        showAlert = true
+                // Плавающая кнопка +
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button {
+                            showPicker = true
+                        } label: {
+                            Image(systemName: "plus")
+                                .font(.system(size: 30, weight: .bold))
+                                .foregroundColor(.white)
+                                .frame(width: 70, height: 70)
+                                .background(Circle().fill(.green).shadow(radius: 10))
+                        }
+                        .padding()
                     }
                 }
-                .buttonStyle(PremiumButtonStyle())
-
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 32)
-            .opacity(opacity)
-            .onAppear {
-                withAnimation(.easeOut(duration: 0.6)) {
-                    opacity = 1
+            .navigationBarHidden(true)
+            .alert(isPresented: $alertShow, content: {
+                Alert(title: Text("Alert"), message: Text(alertMessage))
+            })
+            .onAppear { unit = globalUnit }
+            .onChange(of: ingredients) { _ in calculateAll() }
+            .onChange(of: unit) { _ in calculateAll() }
+            .sheet(isPresented: $showPicker) {
+                IngredientPicker { ingredient in
+                    withAnimation {
+                        ingredients.append(IngredientItem(ingredient: ingredient))
+                    }
                 }
             }
+            .preferredColorScheme(.dark)
         }
-        .sheet(isPresented: $showIngredientPicker) {
-            IngredientPickerView(selected: $ingredientAmounts)
-        }
-        .alert(alertMessage, isPresented: $showAlert) {
-            Button("OK") {}
-        }
-        .onAppear { unit = globalUnit }
-        .onChange(of: ingredientAmounts) { _ in
-            calculateAll()
-        }
-        .onChange(of: unit) { _ in calculateAll() }
     }
     
     private func calculateAll() {
+        totalPercentage = unit == "%" ? ingredients.reduce(0) { $0 + $1.amount } : 0
         calculateNutrients()
         calculateCost()
     }
     
-    private func validateTotal() -> Bool {
-        if unit == "%" {
-            totalPercentage = ingredientAmounts.reduce(0) { $0 + $1.amount }
-            return abs(totalPercentage - 100) < 0.1
-        }
-        return ingredientAmounts.allSatisfy { $0.amount > 0 }
-    }
-    
     private func calculateNutrients() {
         var totals: [String: Double] = [:]
-        var totalAmount = 0.0
-        for ia in ingredientAmounts {
-            var amt = ia.amount
-            if unit == "%" { amt /= 100 }
-            totalAmount += amt
-            for (key, nut) in ia.ingredient.nutrients {
-                totals[key, default: 0] += nut.value * amt
+        var totalWeight: Double = 0
+        
+        for item in ingredients {
+            let weight = unit == "%" ? item.amount / 100 : item.amount
+            totalWeight += weight
+            for (key, nut) in item.ingredient.nutrients {
+                totals[key, default: 0] += nut.value * weight
             }
         }
-        if totalAmount == 0 { return }
         
-        for key in totals.keys {
-            calculatedNutrients[key] = Nutrient(name: key, value: totals[key]! / totalAmount, unit: "%") // For % nutrients
+        guard totalWeight > 0 else { calculatedNutrients = [:]; return }
+        
+        var result: [String: Nutrient] = [:]
+        for (key, total) in totals {
+            let value = key == "Energy" ? total : (total / totalWeight) * 100
+            result[key] = Nutrient(name: key, value: value, unit: key == "Energy" ? "kcal/kg" : "%")
         }
-        
-        // Energy is additive per kg
-        if let energy = totals["Energy"] {
-            calculatedNutrients["Energy"] = Nutrient(name: "Energy", value: energy, unit: "kcal/kg") // Already weighted
-        }
-        
-        checkNormsAndRecommend()
+        calculatedNutrients = result
+        checkRecommendations()
     }
     
-    private func checkNormsAndRecommend() {
-        recommendations = []
-        if let norms = nutrientNorms[birdType]?[goal]?[age] {
-            for (key, (min, max)) in norms {
-                if let val = calculatedNutrients[key]?.value {
-                    if val < min { recommendations.append("Deficit in \(key): add sources.") ; scheduleNotification(title: "Nutrient Alert", body: "Deficit in \(key)") }
-                    if val > max { recommendations.append("Excess in \(key): reduce.") ; scheduleNotification(title: "Nutrient Alert", body: "Excess in \(key)") }
-                } else {
-                    recommendations.append("\(key) not calculated.")
-                }
+    private func checkRecommendations() {
+        recommendations.removeAll()
+        guard let norms = nutrientNorms[birdType]?[goal]?[age] else { return }
+        for (key, range) in norms {
+            if let val = calculatedNutrients[key]?.value {
+                if val < range.min { recommendations.append("Low \(key): add more sources") }
+                if val > range.max { recommendations.append("High \(key): reduce") }
             }
         }
     }
     
     private func calculateCost() {
-        var totalCost = 0.0
-        var totalAmount = 0.0
-        for ia in ingredientAmounts {
-            if let price = ia.ingredient.pricePerKg {
-                var amt = ia.amount / (unit == "%" ? 100 : 1) // kg fraction
-                totalCost += price * amt
-                totalAmount += amt
-            }
+        let totalCost = ingredients.reduce(0) {
+            let amount = unit == "%" ? $1.amount / 100 : $1.amount
+            return $0 + amount * ($1.ingredient.pricePerKg ?? 0)
         }
-        costPerKg = totalAmount > 0 ? totalCost / totalAmount : 0
-    }
-    
-    private func getHighlightColor(for nutrient: Nutrient, birdType: BirdType, goal: Goal, age: AgeGroup) -> Color {
-        if let norms = nutrientNorms[birdType]?[goal]?[age]?[nutrient.name] {
-            let val = nutrient.value
-            if val >= norms.min && val <= norms.max { return Color.accentGreen }
-            if val < norms.min { return Color.deficitYellow }
-            return Color.errorRed
-        }
-        return Color.textPrimary
-    }
-    
-    @State var savedMixesData: Data!
-    
-    private func saveMix() {
-        var mix = FeedMix(name: "Mix \(DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .short))", birdType: birdType, goal: goal, age: age, weight: Double(weight), ingredients: ingredientAmounts, calculatedNutrients: calculatedNutrients, date: Date())
-        mix.costPerKg = costPerKg
-        var mixes = (try? JSONDecoder().decode([FeedMix].self, from: savedMixesData)) ?? []
-        mixes.append(mix)
-        savedMixesData = (try? JSONEncoder().encode(mixes)) ?? Data()
-    }
-    
-    private func createPDFData(for nutrients: [String: Nutrient], recommendations: [String], mix: FeedMix) -> Data {
-        let pdfMetaData = [kCGPDFContextCreator as String: "Poultry Feed App"]
-        let format = UIGraphicsPDFRendererFormat()
-        format.documentInfo = pdfMetaData as [String: Any]
-        
-        let pageRect = CGRect(x: 0, y: 0, width: 595.2, height: 841.8) // A4
-        let renderer = UIGraphicsPDFRenderer(bounds: pageRect, format: format)
-        return renderer.pdfData { context in
-            context.beginPage()
-            let attributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 12)]
-            var y: CGFloat = 20
-            "Bird: \(mix.birdType.rawValue), Goal: \(mix.goal.rawValue), Age: \(mix.age.rawValue)".draw(at: CGPoint(x: 20, y: y), withAttributes: attributes)
-            y += 20
-            for (key, nut) in nutrients {
-                "\(key): \(nut.value) \(nut.unit)".draw(at: CGPoint(x: 20, y: y), withAttributes: attributes)
-                y += 15
-            }
-            y += 20
-            "Recommendations:".draw(at: CGPoint(x: 20, y: y), withAttributes: attributes)
-            y += 15
-            for rec in recommendations {
-                rec.draw(at: CGPoint(x: 20, y: y), withAttributes: attributes)
-                y += 15
-            }
-        }
-    }
-    
-    private func startVoiceRecognition() {
-        SFSpeechRecognizer.requestAuthorization { status in
-            if status == .authorized {
-                let recognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))
-                // Implement audio recording and recognition here
-                // For example, parse "Create feed for chickens egg laying adult"
-                // Set birdType = .chicken, goal = .eggLaying, age = .adult
-            }
-        }
+        let totalWeight = unit == "%" ? 1.0 : ingredients.reduce(0) { $0 + $1.amount }
+        costPerKg = totalWeight > 0 ? totalCost / totalWeight : 0
     }
     
     private func autoSuggest() {
-        if let norms = nutrientNorms[birdType]?[goal]?[age] {
-            // Simple suggestion: if protein low, add soybean
-            if let protNorm = norms["Protein"]?.min, let currProt = calculatedNutrients["Protein"]?.value, currProt < protNorm {
-                if let soy = defaultIngredients.first(where: { $0.name == "Soybean Meal" }) {
-                    ingredientAmounts.append(IngredientAmount(ingredient: soy, amount: 10, unit: unit))
-                }
+        guard let proteinNorm = nutrientNorms[birdType]?[goal]?[age]?["Protein"]?.min,
+              let current = calculatedNutrients["Protein"]?.value,
+              current < proteinNorm,
+              let soy = defaultIngredients.first(where: { $0.name.localizedCaseInsensitiveContains("soy") }) else { return }
+        
+        if !ingredients.contains(where: { $0.ingredient.id == soy.id }) {
+            withAnimation {
+                ingredients.append(IngredientItem(ingredient: soy, amount: 18))
             }
-            // Add similar for other nutrients
+        }
+    }
+    
+    private func saveMix() {
+        let mix = FeedMix(
+            name: "Mix • \(Date().formatted(.dateTime.weekday().month().day().hour().minute()))",
+            birdType: birdType,
+            goal: goal,
+            age: age,
+            weight: Double(weight) ?? 0,
+            ingredients: ingredients.map { IngredientAmount(ingredient: $0.ingredient, amount: $0.amount, unit: unit) },
+            calculatedNutrients: calculatedNutrients,
+            date: Date(),
+            costPerKg: costPerKg,
+        )
+        var mixes = (try? JSONDecoder().decode([FeedMix].self, from: savedMixesData)) ?? []
+        mixes.append(mix)
+        savedMixesData = (try? JSONEncoder().encode(mixes)) ?? Data()
+        alertShow = true
+        alertMessage = "Feed Added"
+        withAnimation {
+            ingredients = []
+            calculatedNutrients = [:]
+            costPerKg = 0.0
+            weight = ""
             calculateAll()
         }
     }
     
-    @AppStorage("currency") private var currency = "USD"
+    @State var alertShow = false
+    @State var alertMessage = ""
+    
 }
+
+// MARK: - КОМПОНЕНТЫ (все ошибки исправлены)
+struct FancyPicker<T: CaseIterable & RawRepresentable & Hashable>: View where T.RawValue == String, T: Identifiable {
+    let title: String
+    @Binding var selection: T
+    let items: T.AllCases
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title).font(.caption).foregroundColor(.white.opacity(0.8))
+            Picker(title, selection: $selection) {
+                ForEach(Array(items), id: \.self) { item in
+                    Text(item.rawValue).tag(item)
+                }
+            }
+            .pickerStyle(.menu)
+            .padding()
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+            .padding(.horizontal)
+        }
+    }
+}
+
+struct FancyIngredientCard: View {
+    @ObservedObject var item: IngredientItem
+    let unit: String
+    let onDelete: () -> Void
+    let onAmountChange: () -> Void
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: "leaf.fill").foregroundColor(.green)
+                Text(item.ingredient.name)
+                    .font(.title3.bold())
+                    .foregroundColor(.white)
+                Spacer()
+                Button(action: onDelete) {
+                    Image(systemName: "trash").foregroundColor(.red)
+                }
+            }
+            
+            HStack {
+                if unit == "%" {
+                    Slider(value: $item.amount, in: 0...100, step: 0.5)
+                        .tint(.green)
+                        .onChange(of: item.amount) { _ in onAmountChange() }
+                } else {
+                    TextField("0", value: $item.amount, format: .number)
+                        .keyboardType(.decimalPad)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(width: 100)
+                }
+                Text(unit)
+                    .font(.caption.bold())
+                    .foregroundColor(.white.opacity(0.8))
+            }
+            
+            Text("\(item.amount, specifier: "%.1f") \(unit)")
+                .font(.title2.bold())
+                .foregroundColor(.white)
+        }
+        .padding()
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
+        .shadow(radius: 8)
+    }
+}
+
+struct IngredientPicker: View {
+    let onSelect: (Ingredient) -> Void
+    @Environment(\.dismiss) var dismiss
+    @State private var search = ""
+    
+    var filtered: [Ingredient] {
+        search.isEmpty ? defaultIngredients : defaultIngredients.filter {
+            $0.name.localizedCaseInsensitiveContains(search)
+        }
+    }
+    
+    var body: some View {
+        NavigationView {
+            List(filtered) { ing in
+                Button {
+                    onSelect(ing)
+                    dismiss()
+                } label: {
+                    HStack {
+                        Image(systemName: "plus.circle.fill")
+                            .foregroundColor(.green)
+                            .font(.title2)
+                        Text(ing.name)
+                            .font(.title3.bold())
+                    }
+                }
+            }
+            .searchable(text: $search)
+            .navigationTitle("Add Ingredient")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+            }
+        }
+    }
+}
+
+struct PremiumButtonStyle: ButtonStyle {
+    let background: Color
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.title3.bold())
+            .foregroundColor(.white)
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(background.opacity(configuration.isPressed ? 0.8 : 1))
+            .cornerRadius(16)
+            .shadow(radius: 5)
+    }
+}
+
+struct IngredientCardView: View {
+    @Binding var item: IngredientItem
+    let unit: String
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: "leaf.fill")
+                    .foregroundColor(.green)
+                Text(item.ingredient.name)
+                    .font(.headline)
+                Spacer()
+            }
+            
+            HStack {
+                if unit == "%" {
+                    Slider(value: $item.amount, in: 0...100, step: 0.5)
+                        .tint(.green)
+                } else {
+                    TextField("0", value: $item.amount, format: .number)
+                        .keyboardType(.decimalPad)
+                        .textFieldStyle(.roundedBorder)
+                }
+                Text(unit)
+                    .font(.caption.bold())
+                    .foregroundColor(.secondary)
+            }
+            
+            Text("\(item.amount, specifier: "%.1f") \(unit)")
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+        .padding()
+        .background(Color(.systemGray6))
+        .cornerRadius(20)
+        .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.green.opacity(0.3), lineWidth: 1))
+    }
+}
+
+struct NutrientsCard: View {
+    let nutrients: [String: Nutrient]
+    let birdType: BirdType
+    let goal: Goal
+    let age: AgeGroup
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Nutrients")
+                .font(.title2.bold())
+            
+            ForEach(nutrients.keys.sorted(), id: \.self) { key in
+                if let nut = nutrients[key] {
+                    let color = getColor(for: nut, key: key, birdType: birdType, goal: goal, age: age)
+                    HStack {
+                        Text("\(key):")
+                        Spacer()
+                        Text("\(nut.value, specifier: "%.2f") \(nut.unit)")
+                            .foregroundColor(color)
+                            .bold()
+                    }
+                    Divider()
+                }
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(Color(.systemGray6))
+        .cornerRadius(20)
+        .padding(.horizontal)
+    }
+    
+    private func getColor(for nutrient: Nutrient, key: String, birdType: BirdType, goal: Goal, age: AgeGroup) -> Color {
+        guard let range = nutrientNorms[birdType]?[goal]?[age]?[key] else { return .primary }
+        let val = nutrient.value
+        if val >= range.min && val <= range.max { return .green }
+        if val < range.min { return .orange }
+        return .red
+    }
+}
+
+struct RecommendationsCard: View {
+    let recommendations: [String]
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Recommendations")
+                .font(.title2.bold())
+            ForEach(recommendations, id: \.self) { rec in
+                Label(rec, systemImage: "exclamationmark.triangle.fill")
+                    .foregroundColor(.red)
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.red.opacity(0.1))
+        .cornerRadius(20)
+        .padding(.horizontal)
+    }
+}
+
+struct IngredientPickerView: View {
+    let onSelect: (Ingredient) -> Void
+    @Environment(\.dismiss) var dismiss
+    @State private var search = ""
+    
+    var filtered: [Ingredient] {
+        search.isEmpty ? defaultIngredients : defaultIngredients.filter {
+            $0.name.lowercased().contains(search.lowercased())
+        }
+    }
+    
+    var body: some View {
+        NavigationView {
+            List(filtered) { ing in
+                Button {
+                    onSelect(ing)
+                    dismiss()
+                } label: {
+                    HStack {
+                        Image(systemName: "plus.circle.fill")
+                            .foregroundColor(.green)
+                        Text(ing.name)
+                            .font(.headline)
+                    }
+                }
+            }
+            .searchable(text: $search)
+            .navigationTitle("Add Ingredient")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+            }
+        }
+    }
+}
+
+func premiumPicker<T: CaseIterable & RawRepresentable & Hashable>(
+    title: String,
+    selection: Binding<T>,
+    items: T.AllCases
+) -> some View where T.RawValue == String {
+    VStack(alignment: .leading, spacing: 8) {
+        Text(title)
+            .font(.caption)
+            .foregroundColor(.secondary)
+            .padding(.horizontal)
+        
+        Picker(title, selection: selection) {
+            ForEach(Array(items), id: \.self) { item in
+                Text(item.rawValue).tag(item)
+            }
+        }
+        .pickerStyle(.menu)
+        .padding()
+        .background(Color(.systemGray6))
+        .cornerRadius(16)
+        .padding(.horizontal)
+    }
+}
+
+// MARK: - Класс-интгредиент (главное!)
+class IngredientItem: Identifiable, ObservableObject, Equatable {
+    let id = UUID()
+    let ingredient: Ingredient
+    @Published var amount: Double = 0
+    
+    init(ingredient: Ingredient, amount: Double = 0) {
+        self.ingredient = ingredient
+        self.amount = amount
+    }
+    
+    static func == (lhs: IngredientItem, rhs: IngredientItem) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
 struct PremiumActionButton: ButtonStyle {
     let color: Color
     func makeBody(configuration: Configuration) -> some View {
@@ -894,43 +1485,43 @@ struct PremiumActionButton: ButtonStyle {
     }
 }
 
-struct IngredientPickerView: View {
-    @Binding var selected: [IngredientAmount]
-    @State private var searchText = ""
-    @Environment(\.dismiss) private var dismiss
-    var filtered: [Ingredient] {
-        defaultIngredients.filter { searchText.isEmpty || $0.name.lowercased().contains(searchText.lowercased()) }
-    }
-    
-    var body: some View {
-        NavigationView {
-            List {
-                ForEach(filtered) { ing in
-                    Button(action: {
-                        selected.append(IngredientAmount(ingredient: ing, amount: 0, unit: "%"))
-                        dismiss()
-                    }) {
-                        HStack(spacing: 16) {
-                            Image(systemName: "plus.square.fill.on.square.fill")
-                                .foregroundColor(Color.accentGreen)
-                                .font(.system(size: 24))
-                            Text(ing.name)
-                                .font(Font.premiumBody)
-                                .foregroundColor(Color.textPrimary)
-                        }
-                    }
-                    .listRowBackground(Color.cardBackground)
-                }
-            }
-            .searchable(text: $searchText)
-            .navigationTitle("Add Ingredient")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                Button("Cancel") { dismiss() }
-            }
-        }
-    }
-}
+//struct IngredientPickerView: View {
+//    @Binding var selected: [IngredientAmount]
+//    @State private var searchText = ""
+//    @Environment(\.dismiss) private var dismiss
+//    var filtered: [Ingredient] {
+//        defaultIngredients.filter { searchText.isEmpty || $0.name.lowercased().contains(searchText.lowercased()) }
+//    }
+//    
+//    var body: some View {
+//        NavigationView {
+//            List {
+//                ForEach(filtered) { ing in
+//                    Button(action: {
+//                        selected.append(IngredientAmount(ingredient: ing, amount: 0, unit: "%"))
+//                        dismiss()
+//                    }) {
+//                        HStack(spacing: 16) {
+//                            Image(systemName: "plus.square.fill.on.square.fill")
+//                                .foregroundColor(Color.accentGreen)
+//                                .font(.system(size: 24))
+//                            Text(ing.name)
+//                                .font(Font.premiumBody)
+//                                .foregroundColor(Color.textPrimary)
+//                        }
+//                    }
+//                    .listRowBackground(Color.cardBackground)
+//                }
+//            }
+//            .searchable(text: $searchText)
+//            .navigationTitle("Add Ingredient")
+//            .navigationBarTitleDisplayMode(.inline)
+//            .toolbar {
+//                Button("Cancel") { dismiss() }
+//            }
+//        }
+//    }
+//}
 
 // IngredientsView premium
 struct IngredientsView: View {
@@ -991,9 +1582,9 @@ struct IngredientsView: View {
             .searchable(text: $searchText)
             .navigationTitle("Ingredients Library")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                Button("Add Custom") { showAddCustom = true }
-            }
+//            .toolbar {
+//                Button("Add Custom") { showAddCustom = true }
+//            }
         }
         .sheet(isPresented: $showAddCustom) {
             VStack(spacing: 24) {
@@ -1009,7 +1600,7 @@ struct IngredientsView: View {
                 Button("Save") {
                     // Implement save custom ingredient
                 }
-                .buttonStyle(PremiumButtonStyle())
+                .buttonStyle(PremiumButtonStyle(background: .green))
             }
             .padding()
         }
@@ -1253,8 +1844,9 @@ final class FarmStarter: ObservableObject {
     }
     
     private func handleNetworkLoss() {
-        let mode = UserDefaults.standard.string(forKey: "app_mode")
-        mode == "HenView" ? transition(to: .offline) : activateFallbackMode()
+        transition(to: .offline)
+//        let mode = UserDefaults.standard.string(forKey: "app_mode")
+//        mode == "HenView" ? transition(to: .offline) : activateFallbackMode()
     }
     
     private func triggerOrganicValidation() {
@@ -1294,7 +1886,6 @@ final class FarmStarter: ObservableObject {
         
         var merged = json
         
-        // Добавляем deep link только если он есть и ключей нет
         for (key, value) in deeplinkValues {
             if merged[key] == nil {
                 merged[key] = value
@@ -1368,8 +1959,12 @@ final class FarmStarter: ObservableObject {
     private func fallbackOnMissingConfig() {
         if let saved = UserDefaults.standard.string(forKey: "saved_trail"),
            let url = URL(string: saved) {
-            contentTrail = url
-            currentState = .henView
+            if currentState == .offline {
+                currentState = .offline
+            } else {
+                contentTrail = url
+                currentState = .henView
+            }
         } else {
             activateFallbackMode()
         }
@@ -1715,14 +2310,27 @@ final class HnKMixeper: NSObject, WKNavigationDelegate, WKUIDelegate {
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        injectNoZoomAndTouchFix(into: webView)
+        let lockScript = """
+        var viewportMeta = document.createElement('meta');
+        viewportMeta.name = 'viewport';
+        viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+        document.head.appendChild(viewportMeta);
+        var lockStyle = document.createElement('style');
+        lockStyle.innerText = 'body { touch-action: pan-x pan-y; } input, textarea, select { font-size: 16px !important; maximum-scale=1.0; }';
+        document.head.appendChild(lockStyle);
+        document.addEventListener('gesturestart', e => e.preventDefault());
+        """;
+        webView.evaluateJavaScript(lockScript) { _, fail in
+            if let fail = fail {
+                print("Lock injection failed: \(fail)")
+            }
+        }
     }
     
     func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping () -> Void) {
         completionHandler()
     }
     
-    // MARK: - Redirect Loop Protection
     func webView(
         _ webView: WKWebView,
         didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!
@@ -1739,7 +2347,6 @@ final class HnKMixeper: NSObject, WKNavigationDelegate, WKUIDelegate {
         archiveCookies(from: webView)
     }
     
-    // MARK: - Error Handling (Too Many Redirects)
     func webView(
         _ webView: WKWebView,
         didFailProvisionalNavigation navigation: WKNavigation!,
@@ -1751,7 +2358,6 @@ final class HnKMixeper: NSObject, WKNavigationDelegate, WKUIDelegate {
         }
     }
     
-    // MARK: - Navigation Policy
     func webView(
         _ webView: WKWebView,
         decidePolicyFor navigationAction: WKNavigationAction,
@@ -1763,13 +2369,19 @@ final class HnKMixeper: NSObject, WKNavigationDelegate, WKUIDelegate {
             if url.scheme?.hasPrefix("http") != true {
                 if UIApplication.shared.canOpenURL(url) {
                     UIApplication.shared.open(url)
-                    if webView.canGoBack {
-                        webView.goBack()
-                    }
-                    
                     decisionHandler(.cancel)
-                    return
+                } else {
+                    if ["paytmmp", "phonepe", "bankid"].contains(url.scheme?.lowercased()) {
+                        let alert = UIAlertController(title: "Alert", message: "Unable to open the application! It is not installed on your device!", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .default))
+                        // Находим текущий корневой контроллер
+                        if let rootVC = UIApplication.shared.windows.first?.rootViewController {
+                            rootVC.present(alert, animated: true)
+                        }
+                    }
                 }
+                decisionHandler(.allow)
+                return
             }
         }
         decisionHandler(.allow)
@@ -1810,27 +2422,6 @@ final class HnKMixeper: NSObject, WKNavigationDelegate, WKUIDelegate {
         return true
     }
     
-    
-    private func injectNoZoomAndTouchFix(into view: WKWebView) {
-        let script = """
-        (function() {
-           const meta = document.createElement('meta');
-           meta.name = 'viewport';
-           meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-           if (!document.querySelector('[name="viewport"]')) {
-               document.head.appendChild(meta);
-           }
-
-           const style = document.createElement('style');
-           style.textContent = 'body { touch-action: pan-x pan-y; }';
-           document.head.appendChild(style);
-        })();
-        """
-        view.evaluateJavaScript(script) { _, error in
-            if let error = error { print("JS Injection failed: \(error)") }
-        }
-    }
-    
     private func archiveCookies(from view: WKWebView) {
         view.configuration.websiteDataStore.httpCookieStore.getAllCookies { cookies in
             var domainMap: [String: [String: [HTTPCookiePropertyKey: Any]]] = [:]
@@ -1847,7 +2438,6 @@ final class HnKMixeper: NSObject, WKNavigationDelegate, WKUIDelegate {
     
 }
 
-// MARK: - Web View Fluent Extensions
 private extension WKWebView {
     @discardableResult func disableAutoResizing() -> Self { translatesAutoresizingMaskIntoConstraints = false; return self }
     @discardableResult func enableScroll() -> Self { scrollView.isScrollEnabled = true; return self }
