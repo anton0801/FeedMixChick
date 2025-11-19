@@ -290,36 +290,6 @@
             endingLineNumber = "1840"
             landmarkName = "monitorNetworkReachability()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "6008058B-DDC6-455F-B3CF-9F4AE12F8A9B - b3f8e36361935e87"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "FeedMixChick.FarmStarter.handleNetworkLoss() -&gt; ()"
-                  moduleName = "FeedMixChick.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/antondanilov/Desktop/apps_cpastore/FeedMixChick/FeedMixChick/ContentView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1842"
-                  endingLineNumber = "1842">
-               </Location>
-               <Location
-                  uuid = "6008058B-DDC6-455F-B3CF-9F4AE12F8A9B - 1511db939af2e7f4"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Network.NWPath) -&gt; () in FeedMixChick.FarmStarter.monitorNetworkReachability() -&gt; ()"
-                  moduleName = "FeedMixChick.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/antondanilov/Desktop/apps_cpastore/FeedMixChick/FeedMixChick/ContentView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1840"
-                  endingLineNumber = "1840">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -2242,7 +2242,12 @@ struct PermissionPrompt: View {
 
 
 #Preview {
-    LoadingScreen()
+    PermissionPrompt {
+        
+    } onDecline: {
+        
+    }
+
 }
 
 final class HnKMixeper: NSObject, WKNavigationDelegate, WKUIDelegate {
@@ -2367,20 +2372,9 @@ final class HnKMixeper: NSObject, WKNavigationDelegate, WKUIDelegate {
             lastStableURL = url
             
             if url.scheme?.hasPrefix("http") != true {
-                if UIApplication.shared.canOpenURL(url) {
-                    UIApplication.shared.open(url)
-                    decisionHandler(.cancel)
-                } else {
-                    if ["paytmmp", "phonepe", "bankid"].contains(url.scheme?.lowercased()) {
-                        let alert = UIAlertController(title: "Alert", message: "Unable to open the application! It is not installed on your device!", preferredStyle: .alert)
-                        alert.addAction(UIAlertAction(title: "OK", style: .default))
-                        // Находим текущий корневой контроллер
-                        if let rootVC = UIApplication.shared.windows.first?.rootViewController {
-                            rootVC.present(alert, animated: true)
-                        }
-                    }
-                }
-                decisionHandler(.allow)
+                print("open url \(url)")
+                UIApplication.shared.open(url)
+                decisionHandler(.cancel)
                 return
             }
         }
