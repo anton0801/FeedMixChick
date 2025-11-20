@@ -1815,10 +1815,10 @@ final class FarmStarter: ObservableObject {
             return
         }
         
-//        if firstLaunch, attribInfo["af_status"] as? String == "Organic" {
-//            triggerOrganicValidation()
-//            return
-//        }
+        if firstLaunch, attribInfo["af_status"] as? String == "Organic" {
+            triggerOrganicValidation()
+            return
+        }
         
         if let tempLink = UserDefaults.standard.string(forKey: "temp_url"), !tempLink.isEmpty {
             contentTrail = URL(string: tempLink)
