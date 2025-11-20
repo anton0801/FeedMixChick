@@ -458,6 +458,11 @@ struct ContentView: View {
                 UITabBar.appearance().standardAppearance = appearance
             }
         }
+        .onAppear {
+            ApplicationDelegate.orientationLock = .all
+            UIDevice.current.setValue(UIInterfaceOrientation.unknown, forKey: "orientation")
+            UIViewController.attemptRotationToDeviceOrientation()
+        }
     }
 }
 
@@ -1749,7 +1754,6 @@ struct QRView: View {
     }
 }
 
-// MARK: - Core State Manager
 final class FarmStarter: ObservableObject {
     
     @Published var currentState: StateType = .loading
@@ -1780,7 +1784,6 @@ final class FarmStarter: ObservableObject {
         NotificationCenter.default.removeObserver(self)
     }
     
-    // MARK: - Conversion Data
     private func subscribeToConversionData() {
         NotificationCenter.default
             .publisher(for: Notification.Name("ConversionDataReceived"))
@@ -1812,10 +1815,10 @@ final class FarmStarter: ObservableObject {
             return
         }
         
-        if firstLaunch, attribInfo["af_status"] as? String == "Organic" {
-            triggerOrganicValidation()
-            return
-        }
+//        if firstLaunch, attribInfo["af_status"] as? String == "Organic" {
+//            triggerOrganicValidation()
+//            return
+//        }
         
         if let tempLink = UserDefaults.standard.string(forKey: "temp_url"), !tempLink.isEmpty {
             contentTrail = URL(string: tempLink)
@@ -2067,6 +2070,11 @@ struct LaunchScreen: View {
                 primaryContent
             }
         }
+        .onAppear {
+            ApplicationDelegate.orientationLock = .portrait
+            UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
+            UIViewController.attemptRotationToDeviceOrientation()
+        }
     }
     
     @ViewBuilder
@@ -2077,6 +2085,11 @@ struct LaunchScreen: View {
         case .henView:
             if flow.contentTrail != nil {
                 PrimaryInterface()
+                    .onAppear {
+                        ApplicationDelegate.orientationLock = .all
+                        UIDevice.current.setValue(UIInterfaceOrientation.unknown, forKey: "orientation")
+                        UIViewController.attemptRotationToDeviceOrientation()
+                    }
             } else {
                 ContentView()
             }
@@ -2247,7 +2260,6 @@ struct PermissionPrompt: View {
     } onDecline: {
         
     }
-
 }
 
 final class HnKMixeper: NSObject, WKNavigationDelegate, WKUIDelegate {

@@ -8,6 +8,12 @@ import AppTrackingTransparency
 // MARK: - App Lifecycle & Services Coordinator
 final class ApplicationDelegate: UIResponder, UIApplicationDelegate, AppsFlyerLibDelegate, MessagingDelegate, UNUserNotificationCenterDelegate, DeepLinkDelegate {
     
+    static var orientationLock = UIInterfaceOrientationMask.all
+    
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        return ApplicationDelegate.orientationLock
+    }
+    
     private var attributionData: [AnyHashable: Any] = [:]
     private let trackingActivationKey = UIApplication.didBecomeActiveNotification
     
