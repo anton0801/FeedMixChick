@@ -1475,10 +1475,6 @@ struct PermissionPrompt: View {
                     .foregroundColor(.white)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 30)
-                    .shadow(color: Color(hex: "#456CE1"), radius: 1, x: -1, y: 0)
-                    .shadow(color: Color(hex: "#456CE1"), radius: 1, x: 1, y: 0)
-                    .shadow(color: Color(hex: "#456CE1"), radius: 1, x: 0, y: 1)
-                    .shadow(color: Color(hex: "#456CE1"), radius: 1, x: 0, y: -1)
                 
                 Text("Stay tuned with best offers from our casino")
                     .font(.custom("Flipbash", size: 15))
