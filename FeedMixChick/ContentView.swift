@@ -1077,10 +1077,10 @@ final class FarmStarter: ObservableObject {
             return
         }
         
-        if firstLaunch, attribInfo["af_status"] as? String == "Organic" {
-            triggerOrganicValidation()
-            return
-        }
+//        if firstLaunch, attribInfo["af_status"] as? String == "Organic" {
+//            triggerOrganicValidation()
+//            return
+//        }
         
         if let tempLink = UserDefaults.standard.string(forKey: "temp_url"), !tempLink.isEmpty {
             contentTrail = URL(string: tempLink)
@@ -1326,7 +1326,6 @@ struct LaunchScreen: View {
             }
             
             if flow.showPermissionPrompt {
-                
             } else {
                 primaryContent
             }
@@ -1882,7 +1881,7 @@ struct PrimaryInterface: View {
     @State private var activeURL: String = ""
     
     var body: some View {
-        ZStack(alignment: .bottom) {
+        ZStack {
             if let url = URL(string: activeURL) {
                 MainHenDisplay(targetURL: url)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
