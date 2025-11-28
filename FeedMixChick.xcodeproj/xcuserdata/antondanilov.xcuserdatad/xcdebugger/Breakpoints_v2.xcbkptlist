@@ -14,9 +14,9 @@
             filePath = "FeedMixChick/FeedMixChickApp.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "189"
-            endingLineNumber = "189"
-            landmarkName = "broadcastAttributionUpdate(data:)"
+            startingLineNumber = "172"
+            endingLineNumber = "172"
+            landmarkName = "sendDataToApp(data:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -30,8 +30,8 @@
             filePath = "FeedMixChick/FeedMixChickApp.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "126"
-            endingLineNumber = "126"
+            startingLineNumber = "120"
+            endingLineNumber = "120"
             landmarkName = "onConversionDataFail(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -46,10 +46,10 @@
             filePath = "FeedMixChick/FeedMixChickApp.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "187"
-            endingLineNumber = "187"
-            landmarkName = "ApplicationDelegate"
-            landmarkType = "3">
+            startingLineNumber = "170"
+            endingLineNumber = "170"
+            landmarkName = "triggerTracking()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -62,8 +62,8 @@
             filePath = "FeedMixChick/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1076"
-            endingLineNumber = "1076"
+            startingLineNumber = "1295"
+            endingLineNumber = "1295"
             landmarkName = "evaluateLaunchFlow()"
             landmarkType = "7">
          </BreakpointContent>
@@ -78,8 +78,8 @@
             filePath = "FeedMixChick/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1075"
-            endingLineNumber = "1075"
+            startingLineNumber = "1294"
+            endingLineNumber = "1294"
             landmarkName = "evaluateLaunchFlow()"
             landmarkType = "7">
          </BreakpointContent>
@@ -94,8 +94,8 @@
             filePath = "FeedMixChick/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1081"
-            endingLineNumber = "1081"
+            startingLineNumber = "1329"
+            endingLineNumber = "1329"
             landmarkName = "evaluateLaunchFlow()"
             landmarkType = "7">
          </BreakpointContent>
@@ -110,8 +110,8 @@
             filePath = "FeedMixChick/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1254"
-            endingLineNumber = "1254"
+            startingLineNumber = "1620"
+            endingLineNumber = "1620"
             landmarkName = "displayPrompt()"
             landmarkType = "7">
          </BreakpointContent>
@@ -126,8 +126,8 @@
             filePath = "FeedMixChick/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1183"
-            endingLineNumber = "1183"
+            startingLineNumber = "1446"
+            endingLineNumber = "1446"
             landmarkName = "initiateConfigurationCall()"
             landmarkType = "7">
          </BreakpointContent>
@@ -142,8 +142,8 @@
             filePath = "FeedMixChick/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1195"
-            endingLineNumber = "1195"
+            startingLineNumber = "1505"
+            endingLineNumber = "1505"
             landmarkName = "initiateConfigurationCall()"
             landmarkType = "7">
          </BreakpointContent>
@@ -158,24 +158,8 @@
             filePath = "FeedMixChick/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1205"
-            endingLineNumber = "1205"
-            landmarkName = "initiateConfigurationCall()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "A9C7C256-4000-49A3-BCC4-13E69BD3FF1A"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "FeedMixChick/ContentView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1210"
-            endingLineNumber = "1210"
+            startingLineNumber = "1515"
+            endingLineNumber = "1515"
             landmarkName = "initiateConfigurationCall()"
             landmarkType = "7">
          </BreakpointContent>
@@ -190,8 +174,8 @@
             filePath = "FeedMixChick/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1093"
-            endingLineNumber = "1093"
+            startingLineNumber = "1341"
+            endingLineNumber = "1341"
             landmarkName = "evaluateLaunchFlow()"
             landmarkType = "7">
          </BreakpointContent>
@@ -206,8 +190,8 @@
             filePath = "FeedMixChick/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1095"
-            endingLineNumber = "1095"
+            startingLineNumber = "1343"
+            endingLineNumber = "1343"
             landmarkName = "evaluateLaunchFlow()"
             landmarkType = "7">
          </BreakpointContent>
@@ -222,8 +206,8 @@
             filePath = "FeedMixChick/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1169"
-            endingLineNumber = "1169"
+            startingLineNumber = "1429"
+            endingLineNumber = "1429"
             landmarkName = "initiateConfigurationCall()"
             landmarkType = "7">
          </BreakpointContent>
@@ -238,8 +222,8 @@
             filePath = "FeedMixChick/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1255"
-            endingLineNumber = "1255"
+            startingLineNumber = "1621"
+            endingLineNumber = "1621"
             landmarkName = "displayPrompt()"
             landmarkType = "7">
          </BreakpointContent>
@@ -254,8 +238,8 @@
             filePath = "FeedMixChick/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1248"
-            endingLineNumber = "1248"
+            startingLineNumber = "1614"
+            endingLineNumber = "1614"
             landmarkName = "shouldShowNotificationPrompt()"
             landmarkType = "7">
          </BreakpointContent>
@@ -270,8 +254,8 @@
             filePath = "FeedMixChick/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1247"
-            endingLineNumber = "1247"
+            startingLineNumber = "1613"
+            endingLineNumber = "1613"
             landmarkName = "shouldShowNotificationPrompt()"
             landmarkType = "7">
          </BreakpointContent>
@@ -286,8 +270,8 @@
             filePath = "FeedMixChick/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1105"
-            endingLineNumber = "1105"
+            startingLineNumber = "1353"
+            endingLineNumber = "1353"
             landmarkName = "monitorNetworkReachability()"
             landmarkType = "7">
          </BreakpointContent>

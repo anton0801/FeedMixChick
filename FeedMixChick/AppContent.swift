@@ -1,8 +1,6 @@
 import Foundation
 import SwiftUI
 
-
-// Color extension with static colors
 extension Color {
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
